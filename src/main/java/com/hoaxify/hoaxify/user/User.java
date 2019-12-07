@@ -14,7 +14,7 @@ public class User {
     @GeneratedValue
     private long id;
 
-    private String username;
+    private String userName;
 
     private String displayName;
 
