@@ -1,9 +1,9 @@
 package com.hoaxify.hoaxify;
 
 import com.hoaxify.hoaxify.error.ApiError;
-import com.hoaxify.hoaxify.user.GenericResponse;
+import com.hoaxify.hoaxify.shared.*;
+import com.hoaxify.hoaxify.user.User;
 import com.hoaxify.hoaxify.user.UserRepository;
-import com.hoaxify.hoaxify.user.entity.User;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -210,7 +210,7 @@ public class UserControllerTest {
         assertThat(responseEntity.getBody().getUrl()).isEqualTo(API_1_0_USERS);
     }
 
-//    Errors
+    //    Errors
     @Test
     public void postUser_whenUserIsInvalid_receiveApiError() {
         User user = new User();
@@ -254,5 +254,11 @@ public class UserControllerTest {
         assertThat(validationErrors.get("password")).isEqualTo("Password must have at least one uppercase, one lowercase letter and one number");
     }
 
-
+    @Test
+    public void postUser_whenAnotherUserHasSameUsername_receiveBadRequest() {
+        userRepository.save(createValidUser());
+        User user = createValidUser();
+        ResponseEntity<Object> objectResponseEntity = postSignUp(user, Object.class);
+        assertThat(objectResponseEntity.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+    }
 }

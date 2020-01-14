@@ -1,7 +1,17 @@
 spring:
+  jpa:
+    properties:
+      javax:
+        persistence:
+          validation:
+            modeL none
+
   h2:
     console:
       enabled: true
       path: /h2-console
+
 server:
   port: 8081
+
+

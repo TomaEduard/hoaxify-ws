@@ -9,20 +9,22 @@ import java.util.Map;
 @Data
 @NoArgsConstructor
 public class ApiError {
+	
+	private long timestamp = new Date().getTime();
+	
+	private int status;
+	
+	private String message;
+	
+	private String url;
+	
+	private Map<String, String> validationErrors;
 
-    private long timestamp = new Date().getTime();
-
-    private int status;
-
-    private String message;
-
-    private String url;
-
-    private Map<String, String> validationErrors;
-
-    public ApiError(int status, String message, String url) {
-        this.status = status;
-        this.message = message;
-        this.url = url;
-    }
+	public ApiError(int status, String message, String url) {
+		super();
+		this.status = status;
+		this.message = message;
+		this.url = url;
+	}
+	
 }
