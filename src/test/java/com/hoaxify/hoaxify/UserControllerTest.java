@@ -16,6 +16,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -40,7 +41,7 @@ public class UserControllerTest {
 
     private User createValidUser() {
         User user = new User();
-        user.setUserName("test-user");
+        user.setUsername("test-user");
         user.setDisplayName("test-display");
         user.setPassword("P4SSword");
         return user;
@@ -88,7 +89,7 @@ public class UserControllerTest {
     @Test
     public void postUser_whenUserHasNullUsername_receiveBadRequest() {
         User user = createValidUser();
-        user.setUserName(null);
+        user.setUsername(null);
         ResponseEntity<Object> response = postSignUp(user, Object.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
@@ -116,7 +117,7 @@ public class UserControllerTest {
     @Test
     public void postUser_whenUserHasUsernameWithLessThanRequired_receiveBadRequest() {
         User user = createValidUser();
-        user.setUserName("abc");
+        user.setUsername("abc");
         ResponseEntity<Object> response = postSignUp(user, Object.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
@@ -145,7 +146,7 @@ public class UserControllerTest {
     public void postUser_whenUserHasUsernameExceedsTheLengthLimit_receiveBadRequest() {
         User user = createValidUser();
         String valueOf256Characters = IntStream.rangeClosed(1, 256).mapToObj(x -> "a").collect(Collectors.joining());
-        user.setUserName(valueOf256Characters);
+        user.setUsername(valueOf256Characters);
         ResponseEntity<Object> response = postSignUp(user, Object.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
@@ -209,10 +210,49 @@ public class UserControllerTest {
         assertThat(responseEntity.getBody().getUrl()).isEqualTo(API_1_0_USERS);
     }
 
+//    Errors
     @Test
     public void postUser_whenUserIsInvalid_receiveApiError() {
         User user = new User();
         ResponseEntity<ApiError> responseEntity = postSignUp(user, ApiError.class);
         assertThat(responseEntity.getBody().getValidationErrors().size()).isEqualTo(3);
     }
+
+    @Test
+    public void postUser_whenUserHasNullUsername_receiveMessageOfNullErrorForUsername() {
+        User user = new User();
+        user.setUsername(null);
+        ResponseEntity<ApiError> responseEntity = postSignUp(user, ApiError.class);
+        Map<String, String> validationErrors = responseEntity.getBody().getValidationErrors();
+        assertThat(validationErrors.get("username")).isEqualTo("Username cannot be null");
+    }
+
+    @Test
+    public void postUser_whenUserHasNullPassword_receiveGenericMessageOfNullError() {
+        User user = new User();
+        user.setPassword(null);
+        ResponseEntity<ApiError> responseEntity = postSignUp(user, ApiError.class);
+        Map<String, String> validationErrors = responseEntity.getBody().getValidationErrors();
+        assertThat(validationErrors.get("password")).isEqualTo("Cannot be null");
+    }
+
+    @Test
+    public void postUser_whenUserHasInvalidLengthUsername_receiveGenericMessageOfSizerError() {
+        User user = new User();
+        user.setUsername("abc");
+        ResponseEntity<ApiError> responseEntity = postSignUp(user, ApiError.class);
+        Map<String, String> validationErrors = responseEntity.getBody().getValidationErrors();
+        assertThat(validationErrors.get("username")).isEqualTo("It must have minimum 4 and maximum 255 characters");
+    }
+
+    @Test
+    public void postUser_whenUserHasInvalidPasswordPattern_receiveMessageOfPasswordPatternError() {
+        User user = new User();
+        user.setPassword("alllowercase");
+        ResponseEntity<ApiError> responseEntity = postSignUp(user, ApiError.class);
+        Map<String, String> validationErrors = responseEntity.getBody().getValidationErrors();
+        assertThat(validationErrors.get("password")).isEqualTo("Password must have at least one uppercase, one lowercase letter and one number");
+    }
+
+
 }
