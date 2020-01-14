@@ -202,10 +202,17 @@ public class UserControllerTest {
     }
 
     @Test
-    public void postUser_whenUserIsInvalid_receiveApiError() {
+    public void postUser_whenUserIsInvalid_receiveApiErrorWithValidationError() {
         User user = new User();
         ResponseEntity<ApiError> responseEntity = postSignUp(user, ApiError.class);
 
         assertThat(responseEntity.getBody().getUrl()).isEqualTo(API_1_0_USERS);
+    }
+
+    @Test
+    public void postUser_whenUserIsInvalid_receiveApiError() {
+        User user = new User();
+        ResponseEntity<ApiError> responseEntity = postSignUp(user, ApiError.class);
+        assertThat(responseEntity.getBody().getValidationErrors().size()).isEqualTo(3);
     }
 }
