@@ -1,5 +1,8 @@
-package com.hoaxify.hoaxify.user;
+package com.hoaxify.hoaxify;
 
+import com.hoaxify.hoaxify.TestUtil;
+import com.hoaxify.hoaxify.user.User;
+import com.hoaxify.hoaxify.user.UserRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,12 +26,7 @@ public class UserRepositoryTest {
 
     @Test
     public void findByUsername_whenUserExist_returnUser() {
-        User user = new User();
-        user.setUsername("test-user");
-        user.setDisplayName("test-display");
-        user.setPassword("P4ssword");
-
-        testEntityManager.persist(user);
+        testEntityManager.persist(TestUtil.createValidUser());
         User inDb = userRepository.findByUsername("test-user");
         assertThat(inDb).isNotNull();
     }
