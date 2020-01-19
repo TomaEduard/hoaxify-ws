@@ -1,8 +1,10 @@
 package com.hoaxify.hoaxify.user;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.hoaxify.hoaxify.error.ApiError;
 import com.hoaxify.hoaxify.shared.GenericResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -15,15 +17,23 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
+@RequestMapping("/api/1.0")
 public class UserController {
 
     @Autowired
     UserService userService;
 
-    @PostMapping("/api/1.0/users")
+    @PostMapping("/users")
+    @JsonView(Views.Base.class)
     GenericResponse createUser(@Valid @RequestBody User user) {
         userService.save(user);
         return new GenericResponse("User saved");
+    }
+
+    @GetMapping("/users")
+    @JsonView(Views.Base.class)
+    Page<?> getUsers() {
+        return userService.getUser();
     }
 
     @ExceptionHandler({MethodArgumentNotValidException.class})
@@ -44,4 +54,5 @@ public class UserController {
 
         return apiError;
     }
+
 }
