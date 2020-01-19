@@ -1,8 +1,9 @@
-package com.hoaxify.hoaxify.user;
+package com.hoaxify.hoaxify.ui.controller;
 
-import com.fasterxml.jackson.annotation.JsonView;
 import com.hoaxify.hoaxify.error.ApiError;
-import com.hoaxify.hoaxify.shared.CurrentUser;
+import com.hoaxify.hoaxify.io.entity.User;
+import com.hoaxify.hoaxify.shared.dto.UserVM;
+import com.hoaxify.hoaxify.ui.transfer.response.CurrentUser;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -17,9 +18,8 @@ import java.nio.file.AccessDeniedException;
 public class LoginController {
 
     @PostMapping("/api/1.0/login")
-    @JsonView(Views.Base.class)
-    User handleLogin(@CurrentUser User loggedInUser) {
-        return loggedInUser;
+    UserVM handleLogin(@CurrentUser User loggedInUser) {
+        return new UserVM(loggedInUser);
     }
 
     @ExceptionHandler({AccessDeniedException.class})

@@ -1,8 +1,8 @@
 package com.hoaxify.hoaxify;
 
-import com.hoaxify.hoaxify.TestUtil;
-import com.hoaxify.hoaxify.user.User;
-import com.hoaxify.hoaxify.user.UserRepository;
+import com.hoaxify.hoaxify.Utils.TestUtil;
+import com.hoaxify.hoaxify.io.entity.User;
+import com.hoaxify.hoaxify.io.repository.UserRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

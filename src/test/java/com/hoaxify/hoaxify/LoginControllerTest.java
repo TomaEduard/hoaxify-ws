@@ -1,9 +1,10 @@
 package com.hoaxify.hoaxify;
 
+import com.hoaxify.hoaxify.Utils.TestUtil;
 import com.hoaxify.hoaxify.error.ApiError;
-import com.hoaxify.hoaxify.user.User;
-import com.hoaxify.hoaxify.user.UserRepository;
-import com.hoaxify.hoaxify.user.UserService;
+import com.hoaxify.hoaxify.io.entity.User;
+import com.hoaxify.hoaxify.io.repository.UserRepository;
+import com.hoaxify.hoaxify.service.UserService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

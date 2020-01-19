@@ -1,4 +1,4 @@
-package com.hoaxify.hoaxify.shared;
+package com.hoaxify.hoaxify.ui.transfer.response;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 

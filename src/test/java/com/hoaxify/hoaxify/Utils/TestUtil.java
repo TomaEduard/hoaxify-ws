@@ -1,6 +1,6 @@
-package com.hoaxify.hoaxify;
+package com.hoaxify.hoaxify.Utils;
 
-import com.hoaxify.hoaxify.user.User;
+import com.hoaxify.hoaxify.io.entity.User;
 
 public class TestUtil {
 
@@ -10,6 +10,12 @@ public class TestUtil {
         user.setDisplayName("test-display");
         user.setPassword("P4ssword");
         user.setImage("profile-image.png");
+        return user;
+    }
+
+    public static User createValidUser(String username) {
+        User user = createValidUser();
+        user.setUsername(username);
         return user;
     }
 

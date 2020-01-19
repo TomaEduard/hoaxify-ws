@@ -1,10 +1,14 @@
-package com.hoaxify.hoaxify.user;
+package com.hoaxify.hoaxify.ui.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.hoaxify.hoaxify.error.ApiError;
-import com.hoaxify.hoaxify.shared.GenericResponse;
+import com.hoaxify.hoaxify.ui.transfer.response.GenericResponse;
+import com.hoaxify.hoaxify.io.entity.User;
+import com.hoaxify.hoaxify.service.UserService;
+import com.hoaxify.hoaxify.shared.dto.UserVM;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -24,16 +28,14 @@ public class UserController {
     UserService userService;
 
     @PostMapping("/users")
-    @JsonView(Views.Base.class)
     GenericResponse createUser(@Valid @RequestBody User user) {
         userService.save(user);
         return new GenericResponse("User saved");
     }
 
     @GetMapping("/users")
-    @JsonView(Views.Base.class)
-    Page<?> getUsers() {
-        return userService.getUser();
+    Page<UserVM> getUsers(Pageable page) {
+        return userService.getUser(page).map(UserVM::new);
     }
 
     @ExceptionHandler({MethodArgumentNotValidException.class})

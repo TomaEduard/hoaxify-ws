@@ -1,4 +1,4 @@
-package com.hoaxify.hoaxify;
+package com.hoaxify.hoaxify.Utils;
 
 import lombok.Data;
 import org.springframework.data.domain.Page;

@@ -1,4 +1,4 @@
-package com.hoaxify.hoaxify.user;
+package com.hoaxify.hoaxify.shared;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;

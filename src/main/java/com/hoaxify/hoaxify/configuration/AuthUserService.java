@@ -6,8 +6,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.hoaxify.hoaxify.user.User;
-import com.hoaxify.hoaxify.user.UserRepository;
+import com.hoaxify.hoaxify.io.entity.User;
+import com.hoaxify.hoaxify.io.repository.UserRepository;
 
 @Service
 public class AuthUserService implements UserDetailsService {

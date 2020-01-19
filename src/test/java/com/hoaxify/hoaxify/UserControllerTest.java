@@ -1,9 +1,11 @@
 package com.hoaxify.hoaxify;
 
+import com.hoaxify.hoaxify.Utils.TestPage;
+import com.hoaxify.hoaxify.Utils.TestUtil;
 import com.hoaxify.hoaxify.error.ApiError;
-import com.hoaxify.hoaxify.shared.GenericResponse;
-import com.hoaxify.hoaxify.user.User;
-import com.hoaxify.hoaxify.user.UserRepository;
+import com.hoaxify.hoaxify.ui.transfer.response.GenericResponse;
+import com.hoaxify.hoaxify.io.entity.User;
+import com.hoaxify.hoaxify.io.repository.UserRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -272,8 +274,7 @@ public class UserControllerTest {
 
     @Test
     public void getUsers_whenThereAreNoUsersInDb_receivePageWithZeroItems() {
-        ResponseEntity<TestPage<Object>> response = getUsers(new ParameterizedTypeReference<TestPage<Object>>() {
-        });
+        ResponseEntity<TestPage<Object>> response = getUsers(new ParameterizedTypeReference<TestPage<Object>>() {});
         assertThat(response.getBody().getTotalElements()).isEqualTo(0);
     }
 
@@ -292,6 +293,43 @@ public class UserControllerTest {
         assertThat(entity.containsKey("password")).isFalse();
     }
 
+    @Test
+    public void getUsers_whenPageIsRequestedFor3ItemsPerPageWhereTheDatabaseHas20Users_receive3Users() {
+        IntStream.rangeClosed(1, 20).mapToObj(i -> "test-user-"+i)
+                .map(TestUtil::createValidUser)
+                .forEach(userRepository::save);
+        String path = API_1_0_USERS + "?page=0&size=3";
+        ResponseEntity<TestPage<Object>> response = getUsers(path, new ParameterizedTypeReference<TestPage<Object>>() {});
+        assertThat(response.getBody().getContent().size()).isEqualTo(3);
+    }
+
+    @Test
+    public void getUsers_whenPageSizeNotProvided_receivePageSizeAs10() {
+        ResponseEntity<TestPage<Object>> response = getUsers(new ParameterizedTypeReference<TestPage<Object>>() {});
+        assertThat(response.getBody().getSize()).isEqualTo(10);
+    }
+
+    @Test
+    public void getUsers_whenPageSizeGreaterThan100_receivePageSizeAs100() {
+        String path = API_1_0_USERS + "?page=0&size=500";
+        ResponseEntity<TestPage<Object>> response = getUsers(path, new ParameterizedTypeReference<TestPage<Object>>() {});
+        assertThat(response.getBody().getSize()).isEqualTo(100);
+    }
+
+    @Test
+    public void getUsers_whenPageSizeIsNegative_receivePageSizeAs10() {
+        String path = API_1_0_USERS + "?page=0&size=-5";
+        ResponseEntity<TestPage<Object>> response = getUsers(path, new ParameterizedTypeReference<TestPage<Object>>() {});
+        assertThat(response.getBody().getSize()).isEqualTo(10);
+    }
+
+    @Test
+    public void getUsers_whenPageSizeIsNegative_receiveFirstPage() {
+        String path = API_1_0_USERS + "?page=0&size=-5";
+        ResponseEntity<TestPage<Object>> response = getUsers(path, new ParameterizedTypeReference<TestPage<Object>>() {});
+        assertThat(response.getBody().getNumber()).isEqualTo(0);
+    }
+
     // Utils
     public <T> ResponseEntity<T> getUsers(ParameterizedTypeReference<T> responseType) {
         return testRestTemplate.exchange(API_1_0_USERS, HttpMethod.GET, null, responseType);
@@ -299,5 +337,9 @@ public class UserControllerTest {
 
     public <T> ResponseEntity<T> postSignUp(Object request, Class<T> response) {
         return testRestTemplate.postForEntity(API_1_0_USERS, request, response);
+    }
+
+    public <T> ResponseEntity<T> getUsers(String path, ParameterizedTypeReference<T> responseType) {
+        return testRestTemplate.exchange(path, HttpMethod.GET, null, responseType);
     }
 }
