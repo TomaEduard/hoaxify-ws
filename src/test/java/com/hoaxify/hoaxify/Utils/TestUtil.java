@@ -1,6 +1,6 @@
 package com.hoaxify.hoaxify.Utils;
 
-import com.hoaxify.hoaxify.io.entity.User;
+import com.hoaxify.hoaxify.user.User;
 
 public class TestUtil {
 

@@ -1,4 +1,4 @@
-package com.hoaxify.hoaxify.ui.transfer.response;
+package com.hoaxify.hoaxify.shared;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

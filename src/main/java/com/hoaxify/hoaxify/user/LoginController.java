@@ -1,9 +1,9 @@
-package com.hoaxify.hoaxify.ui.controller;
+package com.hoaxify.hoaxify.user;
 
 import com.hoaxify.hoaxify.error.ApiError;
-import com.hoaxify.hoaxify.io.entity.User;
-import com.hoaxify.hoaxify.shared.dto.UserVM;
-import com.hoaxify.hoaxify.ui.transfer.response.CurrentUser;
+import com.hoaxify.hoaxify.user.User;
+import com.hoaxify.hoaxify.user.userVM.UserVM;
+import com.hoaxify.hoaxify.shared.CurrentUser;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;

@@ -1,11 +1,11 @@
-package com.hoaxify.hoaxify.ui.controller;
+package com.hoaxify.hoaxify.user;
 
-import com.fasterxml.jackson.annotation.JsonView;
 import com.hoaxify.hoaxify.error.ApiError;
-import com.hoaxify.hoaxify.ui.transfer.response.GenericResponse;
-import com.hoaxify.hoaxify.io.entity.User;
-import com.hoaxify.hoaxify.service.UserService;
-import com.hoaxify.hoaxify.shared.dto.UserVM;
+import com.hoaxify.hoaxify.shared.CurrentUser;
+import com.hoaxify.hoaxify.shared.GenericResponse;
+import com.hoaxify.hoaxify.user.User;
+import com.hoaxify.hoaxify.user.UserService;
+import com.hoaxify.hoaxify.user.userVM.UserVM;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -34,8 +34,8 @@ public class UserController {
     }
 
     @GetMapping("/users")
-    Page<UserVM> getUsers(Pageable page) {
-        return userService.getUser(page).map(UserVM::new);
+    Page<UserVM> getUsers(@CurrentUser User loggedInUser, Pageable page) {
+        return userService.getUser(loggedInUser, page).map(UserVM::new);
     }
 
     @ExceptionHandler({MethodArgumentNotValidException.class})

@@ -2,9 +2,9 @@ package com.hoaxify.hoaxify;
 
 import com.hoaxify.hoaxify.Utils.TestUtil;
 import com.hoaxify.hoaxify.error.ApiError;
-import com.hoaxify.hoaxify.io.entity.User;
-import com.hoaxify.hoaxify.io.repository.UserRepository;
-import com.hoaxify.hoaxify.service.UserService;
+import com.hoaxify.hoaxify.user.User;
+import com.hoaxify.hoaxify.user.UserRepository;
+import com.hoaxify.hoaxify.user.UserService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -148,7 +148,7 @@ public class LoginControllerTest {
     }
 
     @Test
-    public void postLogin_withValidCredentials_notreceiveLoggedInUserPassword() {
+    public void postLogin_withValidCredentials_notReceiveLoggedInUserPassword() {
         User inDB = userService.save(TestUtil.createValidUser());
         // save credentials in header for basic Authentication
         authenticate();

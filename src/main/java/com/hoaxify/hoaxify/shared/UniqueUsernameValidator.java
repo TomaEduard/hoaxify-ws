@@ -1,8 +1,7 @@
 package com.hoaxify.hoaxify.shared;
 
-import com.hoaxify.hoaxify.io.entity.User;
-import com.hoaxify.hoaxify.io.repository.UserRepository;
-import com.hoaxify.hoaxify.shared.UniqueUsername;
+import com.hoaxify.hoaxify.user.User;
+import com.hoaxify.hoaxify.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.validation.ConstraintValidator;

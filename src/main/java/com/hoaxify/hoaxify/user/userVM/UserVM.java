@@ -1,6 +1,6 @@
-package com.hoaxify.hoaxify.shared.dto;
+package com.hoaxify.hoaxify.user.userVM;
 
-import com.hoaxify.hoaxify.io.entity.User;
+import com.hoaxify.hoaxify.user.User;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

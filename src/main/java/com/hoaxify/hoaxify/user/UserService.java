@@ -1,7 +1,7 @@
-package com.hoaxify.hoaxify.service;
+package com.hoaxify.hoaxify.user;
 
-import com.hoaxify.hoaxify.io.entity.User;
-import com.hoaxify.hoaxify.io.repository.UserRepository;
+import com.hoaxify.hoaxify.user.User;
+import com.hoaxify.hoaxify.user.UserRepository;
 import org.springframework.data.domain.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -24,7 +24,10 @@ public class UserService {
 		return userRepository.save(user);
 	}
 
-	public Page<User> getUser(Pageable pageable) {
+	public Page<User> getUser(User loggedInUser, Pageable pageable) {
+		if(loggedInUser != null) {
+			return userRepository.findByUsernameNot(loggedInUser.getUsername(), pageable);
+		}
 		return userRepository.findAll(pageable);
 	}
 }
