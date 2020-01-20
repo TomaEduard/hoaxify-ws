@@ -18,21 +18,18 @@ public class HoaxifyApplication {
     }
 
     @Bean
-	@Profile("!test")
+    @Profile("!test")
     CommandLineRunner run(UserService userService) {
-		return new CommandLineRunner() {
-			@Override
-			public void run(String... args) throws Exception {
-				IntStream.rangeClosed(1, 15)
-						.mapToObj(i -> {
-							User user = new User();
-							user.setUsername("user" + i);
-							user.setDisplayName("display" + i);
-							user.setPassword("P4ssword");
-							return user;
-						})
-						.forEach(userService::save);
-			}
-		};
-	}
+        return (args) -> {
+            IntStream.rangeClosed(1, 15)
+                    .mapToObj(i -> {
+                        User user = new User();
+                        user.setUsername("user" + i);
+                        user.setDisplayName("display" + i);
+                        user.setPassword("P4ssword");
+                        return user;
+                    })
+                    .forEach(userService::save);
+        };
+    }
 }

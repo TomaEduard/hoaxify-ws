@@ -1,5 +1,6 @@
 package com.hoaxify.hoaxify.user;
 
+import com.hoaxify.hoaxify.error.NotFoundException;
 import com.hoaxify.hoaxify.user.User;
 import com.hoaxify.hoaxify.user.UserRepository;
 import org.springframework.data.domain.*;
@@ -29,5 +30,13 @@ public class UserService {
 			return userRepository.findByUsernameNot(loggedInUser.getUsername(), pageable);
 		}
 		return userRepository.findAll(pageable);
+	}
+
+	public User getUserByUsername(String username) {
+		User inDB = userRepository.findByUsername(username);
+		if (inDB == null) {
+			throw new NotFoundException(username + " not found");
+		}
+		return inDB;
 	}
 }

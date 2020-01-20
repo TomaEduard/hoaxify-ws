@@ -38,6 +38,12 @@ public class UserController {
         return userService.getUser(loggedInUser, page).map(UserVM::new);
     }
 
+    @GetMapping("/users/{username}")
+    UserVM getUserByName(@PathVariable String username) {
+        User user = userService.getUserByUsername(username);
+        return new UserVM(user);
+    }
+
     @ExceptionHandler({MethodArgumentNotValidException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     ApiError handleValidationException(MethodArgumentNotValidException exception, HttpServletRequest request) {
