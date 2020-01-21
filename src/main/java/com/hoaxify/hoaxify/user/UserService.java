@@ -1,9 +1,7 @@
 package com.hoaxify.hoaxify.user;
 
 import com.hoaxify.hoaxify.error.NotFoundException;
-import com.hoaxify.hoaxify.user.User;
-import com.hoaxify.hoaxify.user.UserRepository;
-import com.hoaxify.hoaxify.user.userVM.UserDisplayNameUpdateVM;
+import com.hoaxify.hoaxify.user.userVM.UserUpdateVM;
 import org.springframework.data.domain.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -41,9 +39,9 @@ public class UserService {
 		return inDB;
 	}
 
-	public User updateDisplayName(long id, UserDisplayNameUpdateVM userDisplayNameUpdateVM) {
+	public User updateDisplayName(long id, UserUpdateVM userUpdateVM) {
 		User inDb = userRepository.getOne(id);
-		inDb.setDisplayName(userDisplayNameUpdateVM.getDisplayName());
+		inDb.setDisplayName(userUpdateVM.getDisplayName());
 		return userRepository.save(inDb);
 	}
 }

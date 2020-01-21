@@ -3,9 +3,7 @@ package com.hoaxify.hoaxify.user;
 import com.hoaxify.hoaxify.error.ApiError;
 import com.hoaxify.hoaxify.shared.CurrentUser;
 import com.hoaxify.hoaxify.shared.GenericResponse;
-import com.hoaxify.hoaxify.user.User;
-import com.hoaxify.hoaxify.user.UserService;
-import com.hoaxify.hoaxify.user.userVM.UserDisplayNameUpdateVM;
+import com.hoaxify.hoaxify.user.userVM.UserUpdateVM;
 import com.hoaxify.hoaxify.user.userVM.UserVM;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -48,8 +46,8 @@ public class UserController {
 
     @PutMapping("/users/{id:[0-9]+}")
     @PreAuthorize("#id == principal.id")
-    UserVM updateUser(@PathVariable long id, @RequestBody(required = false) UserDisplayNameUpdateVM userDisplayNameUpdateVM) {
-        User updated = userService.updateDisplayName(id, userDisplayNameUpdateVM);
+    UserVM updateUserDisplayname(@PathVariable long id, @RequestBody(required = false) UserUpdateVM userUpdateVM) {
+        User updated = userService.updateDisplayName(id, userUpdateVM);
         return new UserVM(updated);
     }
 

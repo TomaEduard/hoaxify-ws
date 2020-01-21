@@ -7,7 +7,7 @@ import com.hoaxify.hoaxify.user.UserService;
 import com.hoaxify.hoaxify.shared.GenericResponse;
 import com.hoaxify.hoaxify.user.User;
 import com.hoaxify.hoaxify.user.UserRepository;
-import com.hoaxify.hoaxify.user.userVM.UserDisplayNameUpdateVM;
+import com.hoaxify.hoaxify.user.userVM.UserUpdateVM;
 import com.hoaxify.hoaxify.user.userVM.UserVM;
 import org.junit.Before;
 import org.junit.Test;
@@ -410,9 +410,9 @@ public class UserControllerTest {
         User user = userService.save(TestUtil.createValidUser("user1"));
         authenticate(user.getUsername());
 
-        UserDisplayNameUpdateVM userDisplayNameUpdateVM = createValidUserDisplayNameUpdateVm();
+        UserUpdateVM userUpdateVM = createValidUserDisplayNameUpdateVm();
 
-        HttpEntity<UserDisplayNameUpdateVM> requestEntity = new HttpEntity<>(userDisplayNameUpdateVM);
+        HttpEntity<UserUpdateVM> requestEntity = new HttpEntity<>(userUpdateVM);
         ResponseEntity<ApiError> response = putUser(user.getId(), requestEntity, Object.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
@@ -421,33 +421,33 @@ public class UserControllerTest {
     public void putUser_whenValidRequestBodyFromAuthorizedUser_displayNameUpdated() {
         User user = userService.save(TestUtil.createValidUser("user1"));
         authenticate(user.getUsername());
-        UserDisplayNameUpdateVM userDisplayNameUpdateVM = createValidUserDisplayNameUpdateVm();
+        UserUpdateVM userUpdateVM = createValidUserDisplayNameUpdateVm();
 
-        HttpEntity<UserDisplayNameUpdateVM> requestEntity = new HttpEntity<>(userDisplayNameUpdateVM);
+        HttpEntity<UserUpdateVM> requestEntity = new HttpEntity<>(userUpdateVM);
         // call update controller
         putUser(user.getId(), requestEntity, Object.class);
 
         User userInDb = userRepository.findByUsername("user1");
-        assertThat(userInDb.getDisplayName()).isEqualTo(userDisplayNameUpdateVM.getDisplayName());
+        assertThat(userInDb.getDisplayName()).isEqualTo(userUpdateVM.getDisplayName());
     }
 
     @Test
     public void putUser_whenValidRequestBodyFromAuthorizedUser_receiveUserVMWithUpdatedDisplayName() {
         User user = userService.save(TestUtil.createValidUser("user1"));
         authenticate(user.getUsername());
-        UserDisplayNameUpdateVM userDisplayNameUpdateVM = createValidUserDisplayNameUpdateVm();
+        UserUpdateVM userUpdateVM = createValidUserDisplayNameUpdateVm();
 
-        HttpEntity<UserDisplayNameUpdateVM> requestEntity = new HttpEntity<>(userDisplayNameUpdateVM);
+        HttpEntity<UserUpdateVM> requestEntity = new HttpEntity<>(userUpdateVM);
         // call update controller
         ResponseEntity<UserVM> response = putUser(user.getId(), requestEntity, UserVM.class);
 
-        assertThat(response.getBody().getDisplayName()).isEqualTo(userDisplayNameUpdateVM.getDisplayName());
+        assertThat(response.getBody().getDisplayName()).isEqualTo(userUpdateVM.getDisplayName());
     }
 
-    private UserDisplayNameUpdateVM createValidUserDisplayNameUpdateVm() {
-        UserDisplayNameUpdateVM userDisplayNameUpdateVM = new UserDisplayNameUpdateVM();
-        userDisplayNameUpdateVM.setDisplayName("newDisplayName");
-        return userDisplayNameUpdateVM;
+    private UserUpdateVM createValidUserDisplayNameUpdateVm() {
+        UserUpdateVM userUpdateVM = new UserUpdateVM();
+        userUpdateVM.setDisplayName("newDisplayName");
+        return userUpdateVM;
     }
 
     // Utils
