@@ -9,6 +9,8 @@ import com.hoaxify.hoaxify.user.User;
 import com.hoaxify.hoaxify.user.UserRepository;
 import com.hoaxify.hoaxify.user.userVM.UserUpdateVM;
 import com.hoaxify.hoaxify.user.userVM.UserVM;
+import org.apache.commons.io.FileUtils;
+import org.aspectj.util.FileUtil;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -24,6 +27,8 @@ import org.springframework.http.client.support.BasicAuthenticationInterceptor;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.io.IOException;
+import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -410,7 +415,7 @@ public class UserControllerTest {
         User user = userService.save(TestUtil.createValidUser("user1"));
         authenticate(user.getUsername());
 
-        UserUpdateVM userUpdateVM = createValidUserDisplayNameUpdateVm();
+        UserUpdateVM userUpdateVM = createValidUserUpdateVm();
 
         HttpEntity<UserUpdateVM> requestEntity = new HttpEntity<>(userUpdateVM);
         ResponseEntity<ApiError> response = putUser(user.getId(), requestEntity, Object.class);
@@ -421,7 +426,7 @@ public class UserControllerTest {
     public void putUser_whenValidRequestBodyFromAuthorizedUser_displayNameUpdated() {
         User user = userService.save(TestUtil.createValidUser("user1"));
         authenticate(user.getUsername());
-        UserUpdateVM userUpdateVM = createValidUserDisplayNameUpdateVm();
+        UserUpdateVM userUpdateVM = createValidUserUpdateVm();
 
         HttpEntity<UserUpdateVM> requestEntity = new HttpEntity<>(userUpdateVM);
         // call update controller
@@ -435,7 +440,7 @@ public class UserControllerTest {
     public void putUser_whenValidRequestBodyFromAuthorizedUser_receiveUserVMWithUpdatedDisplayName() {
         User user = userService.save(TestUtil.createValidUser("user1"));
         authenticate(user.getUsername());
-        UserUpdateVM userUpdateVM = createValidUserDisplayNameUpdateVm();
+        UserUpdateVM userUpdateVM = createValidUserUpdateVm();
 
         HttpEntity<UserUpdateVM> requestEntity = new HttpEntity<>(userUpdateVM);
         // call update controller
@@ -444,13 +449,36 @@ public class UserControllerTest {
         assertThat(response.getBody().getDisplayName()).isEqualTo(userUpdateVM.getDisplayName());
     }
 
-    private UserUpdateVM createValidUserDisplayNameUpdateVm() {
+    @Test
+    public void putUser_whenValidRequestBodyWithSupportedImageFormatAuthorizedUser_receiveUser() throws IOException {
+        User user = userService.save(TestUtil.createValidUser("user1"));
+        authenticate(user.getUsername());
+
+        // image
+        ClassPathResource imageResource = new ClassPathResource("profile.png");
+        // create valid update user
+        UserUpdateVM userUpdateVM = createValidUserUpdateVm();
+
+        // convert image to byte array
+        byte[] imageArr = FileUtils.readFileToByteArray(imageResource.getFile());
+        String imageString = Base64.getEncoder().encodeToString(imageArr);
+        // set updated user the new image
+        userUpdateVM.setImage(imageString);
+
+        HttpEntity<UserUpdateVM> requestEntity = new HttpEntity<>(userUpdateVM);
+        // call update controller
+        ResponseEntity<UserVM> response = putUser(user.getId(), requestEntity, UserVM.class);
+
+        assertThat(response.getBody().getImage()).isNotEqualTo("profile-image.png");
+    }
+
+    // Utils
+    private UserUpdateVM createValidUserUpdateVm() {
         UserUpdateVM userUpdateVM = new UserUpdateVM();
         userUpdateVM.setDisplayName("newDisplayName");
         return userUpdateVM;
     }
 
-    // Utils
     // set Authentication Basic Auth with Username and Password
     private void authenticate(String username) {
         testRestTemplate.getRestTemplate()

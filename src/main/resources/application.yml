@@ -1,3 +1,4 @@
+
 spring:
   jpa:
     properties:
@@ -16,5 +17,10 @@ spring:
         default-page-size: 10
         max-page-size: 100
 
+  ### User for both db ###
+  datasource:
+    username: toma
+    password: toma
 
-
+hoaxify:
+  upload-path: uploads-test

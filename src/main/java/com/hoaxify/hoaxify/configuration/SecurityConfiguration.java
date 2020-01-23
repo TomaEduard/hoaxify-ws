@@ -26,12 +26,15 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         http.httpBasic().authenticationEntryPoint(new BasicAuthenticationEntryPoint());
 
         http
+                .cors().and()
+
                 .authorizeRequests()
                     .antMatchers(HttpMethod.POST, "/api/1.0/login").authenticated()
                     .antMatchers(HttpMethod.PUT, "/api/1.0/users/{id:[0-9]+}").authenticated()
                 .and()
                 .authorizeRequests().anyRequest().permitAll();
 
+        http.headers().frameOptions().disable();
         // prevent cached session and reauthorizing all request receive
         //  // we want all rest api(not login) contain header (Auth.. Bearer token) and reAuthorize 
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);

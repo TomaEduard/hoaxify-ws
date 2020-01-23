@@ -8,6 +8,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
 
+import java.util.UUID;
 import java.util.stream.IntStream;
 
 @SpringBootApplication
@@ -27,6 +28,7 @@ public class HoaxifyApplication {
                         user.setUsername("user" + i);
                         user.setDisplayName("display" + i);
                         user.setPassword("P4ssword");
+                        user.setImage(UUID.randomUUID().toString().replaceAll("-", ""));
                         return user;
                     })
                     .forEach(userService::save);
