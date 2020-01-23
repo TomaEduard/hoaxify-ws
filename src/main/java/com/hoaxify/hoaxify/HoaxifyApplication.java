@@ -19,7 +19,7 @@ public class HoaxifyApplication {
     }
 
     @Bean
-    @Profile("!test")
+    @Profile("dev") // it only run and make 15 object in dev mode
     CommandLineRunner run(UserService userService) {
         return (args) -> {
             IntStream.rangeClosed(1, 15)

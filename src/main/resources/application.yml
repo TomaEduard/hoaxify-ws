@@ -1,12 +1,15 @@
-
+# Default profile
 spring:
+  profiles:
+    active:
+#      - prod
+      - dev
   jpa:
     properties:
       javax:
         persistence:
           validation:
             mode: none
-
   h2:
     console:
       enabled: true
@@ -16,11 +19,35 @@ spring:
       pageable:
         default-page-size: 10
         max-page-size: 100
-
-  ### User for both db ###
+---
+### User for both db ###
+spring:
+  profiles: prod
   datasource:
-    username: toma
-    password: toma
-
+    url: jdbc:h2:./hoaxify-prod
+  h2:
+    console:
+      enabled: false
+  jpa:
+    hibernate:
+      ddl-auto: update
+hoaxify:
+  upload-path: uploads-prod
+---
+spring:
+  profiles: dev
+  datasource:
+    url: jdbc:h2:mem:hoaxify-dev
+hoaxify:
+  upload-path: uploads-dev
+datasource:
+  username: toma
+  password: toma
+---
+spring:
+  profiles: test
 hoaxify:
   upload-path: uploads-test
+datasource:
+  username: toma
+  password: toma
