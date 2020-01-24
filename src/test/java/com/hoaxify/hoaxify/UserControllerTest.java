@@ -2,6 +2,7 @@ package com.hoaxify.hoaxify;
 
 import com.hoaxify.hoaxify.Utils.TestPage;
 import com.hoaxify.hoaxify.Utils.TestUtil;
+import com.hoaxify.hoaxify.configuration.AppConfiguration;
 import com.hoaxify.hoaxify.error.ApiError;
 import com.hoaxify.hoaxify.user.UserService;
 import com.hoaxify.hoaxify.shared.GenericResponse;
@@ -11,6 +12,7 @@ import com.hoaxify.hoaxify.user.userVM.UserUpdateVM;
 import com.hoaxify.hoaxify.user.userVM.UserVM;
 import org.apache.commons.io.FileUtils;
 import org.aspectj.util.FileUtil;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,6 +29,7 @@ import org.springframework.http.client.support.BasicAuthenticationInterceptor;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Base64;
 import java.util.List;
@@ -51,10 +54,19 @@ public class UserControllerTest {
     @Autowired
     UserService userService;
 
+    @Autowired
+    AppConfiguration appConfiguration;
+
     @Before
     public void cleanup() {
         userRepository.deleteAll();
         testRestTemplate.getRestTemplate().getInterceptors().clear();
+    }
+
+    @After
+    public void cleanDirectory() throws IOException {
+        FileUtils.cleanDirectory(new File(appConfiguration.getFullProfileImagesPath()));
+        FileUtils.cleanDirectory(new File(appConfiguration.getFullAttachmentsPath()));
     }
 
     @Test
@@ -472,7 +484,48 @@ public class UserControllerTest {
         assertThat(response.getBody().getImage()).isNotEqualTo("profile-image.png");
     }
 
+    @Test
+    public void putUser_withValidRequestBodyWithSupportedImageFromAuthorizedUser_receiveUserVMWithRandomImageName() throws IOException {
+        User user = userService.save(TestUtil.createValidUser("user1"));
+        authenticate(user.getUsername());
+
+        UserUpdateVM updatedUser = createValidUserUpdateVm();
+        String imageString = readFileToBase65("profile.png");
+        updatedUser.setImage(imageString);
+
+        HttpEntity<UserUpdateVM> requestEntity = new HttpEntity<>(updatedUser);
+        ResponseEntity<UserVM> response = putUser(user.getId(), requestEntity, UserVM.class);
+        assertThat(response.getBody().getImage()).isNotEqualTo("profile-image.png");
+    }
+
+    @Test
+    public void putUser_withValidRequestBodyWithSupportedImageFromAuthorizedUser_imageIsStoredUnderProfileFolder() throws IOException {
+        User user = userService.save(TestUtil.createValidUser("user1"));
+        authenticate(user.getUsername());
+
+        UserUpdateVM updatedUser = createValidUserUpdateVm();
+        String imageString = readFileToBase65("profile.png");
+        updatedUser.setImage(imageString);
+
+        HttpEntity<UserUpdateVM> requestEntity = new HttpEntity<>(updatedUser);
+        ResponseEntity<UserVM> response = putUser(user.getId(), requestEntity, UserVM.class);
+
+        String storedImageName = response.getBody().getImage();
+
+        String profilePicturePath = appConfiguration.getFullProfileImagesPath() + "/" + storedImageName;
+
+        File storedImage = new File(profilePicturePath);
+
+        assertThat(storedImage.exists()).isTrue();
+    }
+
     // Utils
+    private String readFileToBase65(String fileName) throws IOException {
+        ClassPathResource imageResources = new ClassPathResource(fileName);
+        byte[] imageArr = FileUtil.readAsByteArray(imageResources.getFile());
+        return Base64.getEncoder().encodeToString(imageArr);
+    }
+
     private UserUpdateVM createValidUserUpdateVm() {
         UserUpdateVM userUpdateVM = new UserUpdateVM();
         userUpdateVM.setDisplayName("newDisplayName");
@@ -506,4 +559,6 @@ public class UserControllerTest {
         String path = API_1_0_USERS + "/" + id;
         return testRestTemplate.exchange(path, HttpMethod.PUT, requestEntity, responseType);
     }
+
+
 }

@@ -1,11 +1,13 @@
 package com.hoaxify.hoaxify.user;
 
 import com.hoaxify.hoaxify.error.NotFoundException;
+import com.hoaxify.hoaxify.file.FileService;
 import com.hoaxify.hoaxify.user.userVM.UserUpdateVM;
 import org.springframework.data.domain.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.UUID;
 
 @Service
@@ -15,10 +17,13 @@ public class UserService {
 
 	PasswordEncoder passwordEncoder;
 
-	public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+	FileService fileService;
+
+	public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, FileService fileService) {
 		super();
 		this.userRepository = userRepository;
 		this.passwordEncoder = passwordEncoder;
+		this.fileService = fileService;
 	}
 
 	public User save(User user) {
@@ -41,12 +46,17 @@ public class UserService {
 		return inDB;
 	}
 
-	public User updateDisplayName(long id, UserUpdateVM userUpdateVM) {
+	public User update(long id, UserUpdateVM userUpdateVM){
 		User inDb = userRepository.getOne(id);
 		inDb.setDisplayName(userUpdateVM.getDisplayName());
 
-		String savedImageName = inDb.getUsername() + UUID.randomUUID().toString().replaceAll("-", "");
-		inDb.setImage(savedImageName);
+		String savedImageName = null;
+		try {
+			savedImageName = fileService.saveProfileImage(userUpdateVM.getImage());
+			inDb.setImage(savedImageName);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 
 		return userRepository.save(inDb);
 	}

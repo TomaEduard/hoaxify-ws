@@ -47,7 +47,7 @@ public class UserController {
     @PutMapping("/users/{id:[0-9]+}")
     @PreAuthorize("#id == principal.id")
     UserVM updateUserDisplayname(@PathVariable long id, @RequestBody(required = false) UserUpdateVM userUpdateVM) {
-        User updated = userService.updateDisplayName(id, userUpdateVM);
+        User updated = userService.update(id, userUpdateVM);
         return new UserVM(updated);
     }
 

@@ -20,7 +20,6 @@ spring:
         default-page-size: 10
         max-page-size: 100
 ---
-### User for both db ###
 spring:
   profiles: prod
   datasource:
