@@ -19,6 +19,10 @@ target/
 *.iml
 *.ipr
 
+### Ignore profile and attachments files of dev mode / test mode ###
+/uploads-dev/*
+/uploads-test/*
+
 ### NetBeans ###
 /nbproject/private/
 /nbbuild/

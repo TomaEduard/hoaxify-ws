@@ -50,14 +50,15 @@ public class UserService {
 		User inDb = userRepository.getOne(id);
 		inDb.setDisplayName(userUpdateVM.getDisplayName());
 
-		String savedImageName = null;
-		try {
-			savedImageName = fileService.saveProfileImage(userUpdateVM.getImage());
-			inDb.setImage(savedImageName);
-		} catch (IOException e) {
-			e.printStackTrace();
+		if (userUpdateVM.getImage() != null) {
+			String savedImageName = null;
+			try {
+				savedImageName = fileService.saveProfileImage(userUpdateVM.getImage());
+				inDb.setImage(savedImageName);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
-
 		return userRepository.save(inDb);
 	}
 }

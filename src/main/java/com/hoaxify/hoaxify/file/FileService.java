@@ -20,12 +20,14 @@ public class FileService {
     }
 
     public String saveProfileImage(String base64Image) throws IOException {
-        String imageName = UUID.randomUUID().toString().replace("-", "");
-
         // convert Base64 in byte[]
         byte[] decodedBytes = Base64.getDecoder().decode(base64Image);
-        // cr8 target file
+
+        // generate name of document
+        String imageName = UUID.randomUUID().toString().replace("-", "");
+        // cr8 target file + name of document
         File target = new File(appConfiguration.getFullProfileImagesPath() + "/" + imageName);
+
         // write byte to this file
         FileUtils.writeByteArrayToFile(target, decodedBytes);
         return imageName;
