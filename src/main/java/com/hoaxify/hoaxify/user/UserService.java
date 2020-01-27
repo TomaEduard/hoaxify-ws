@@ -54,6 +54,8 @@ public class UserService {
 			String savedImageName = null;
 			try {
 				savedImageName = fileService.saveProfileImage(userUpdateVM.getImage());
+				// remove the old picture
+				fileService.deleteProfileImage(inDb.getImage());
 				inDb.setImage(savedImageName);
 			} catch (IOException e) {
 				e.printStackTrace();

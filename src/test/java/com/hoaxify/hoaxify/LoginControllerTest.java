@@ -160,6 +160,7 @@ public class LoginControllerTest {
         assertThat(body.containsKey("password")).isFalse();
     }
 
+
     // Utils
     private void authenticate() {
         testRestTemplate.getRestTemplate()
