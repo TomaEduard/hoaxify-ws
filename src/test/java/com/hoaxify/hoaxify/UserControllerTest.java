@@ -4,10 +4,10 @@ import com.hoaxify.hoaxify.Utils.TestPage;
 import com.hoaxify.hoaxify.Utils.TestUtil;
 import com.hoaxify.hoaxify.configuration.AppConfiguration;
 import com.hoaxify.hoaxify.error.ApiError;
-import com.hoaxify.hoaxify.user.UserService;
 import com.hoaxify.hoaxify.shared.GenericResponse;
 import com.hoaxify.hoaxify.user.User;
 import com.hoaxify.hoaxify.user.UserRepository;
+import com.hoaxify.hoaxify.user.UserService;
 import com.hoaxify.hoaxify.user.userVM.UserUpdateVM;
 import com.hoaxify.hoaxify.user.userVM.UserVM;
 import org.apache.commons.io.FileUtils;
@@ -32,7 +32,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.io.File;
 import java.io.IOException;
 import java.util.Base64;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -297,59 +296,67 @@ public class UserControllerTest {
 
     @Test
     public void getUsers_whenThereAreNoUsersInDb_receivePageWithZeroItems() {
-        ResponseEntity<TestPage<Object>> response = getUsers(new ParameterizedTypeReference<TestPage<Object>>() {});
+        ResponseEntity<TestPage<Object>> response = getUsers(new ParameterizedTypeReference<TestPage<Object>>() {
+        });
         assertThat(response.getBody().getTotalElements()).isEqualTo(0);
     }
 
     @Test
     public void getUsers_whenThereIsAUserInDB_receivePageWithUser() {
         userRepository.save(TestUtil.createValidUser());
-        ResponseEntity<TestPage<Object>> response = getUsers(new ParameterizedTypeReference<TestPage<Object>>() {});
+        ResponseEntity<TestPage<Object>> response = getUsers(new ParameterizedTypeReference<TestPage<Object>>() {
+        });
         assertThat(response.getBody().getNumberOfElements()).isEqualTo(1);
     }
 
     @Test
     public void getUsers_whenThereIsAUserInDB_receiveUserWithoutPassword() {
         userRepository.save(TestUtil.createValidUser());
-        ResponseEntity<TestPage<Map<String, Object>>> response = getUsers(new ParameterizedTypeReference<TestPage<Map<String, Object>>>() {});
+        ResponseEntity<TestPage<Map<String, Object>>> response = getUsers(new ParameterizedTypeReference<TestPage<Map<String, Object>>>() {
+        });
         Map<String, Object> entity = response.getBody().getContent().get(0);
         assertThat(entity.containsKey("password")).isFalse();
     }
 
     @Test
     public void getUsers_whenPageIsRequestedFor3ItemsPerPageWhereTheDatabaseHas20Users_receive3Users() {
-        IntStream.rangeClosed(1, 20).mapToObj(i -> "test-user-"+i)
+        IntStream.rangeClosed(1, 20).mapToObj(i -> "test-user-" + i)
                 .map(TestUtil::createValidUser)
                 .forEach(userRepository::save);
         String path = API_1_0_USERS + "?page=0&size=3";
-        ResponseEntity<TestPage<Object>> response = getUsers(path, new ParameterizedTypeReference<TestPage<Object>>() {});
+        ResponseEntity<TestPage<Object>> response = getUsers(path, new ParameterizedTypeReference<TestPage<Object>>() {
+        });
         assertThat(response.getBody().getContent().size()).isEqualTo(3);
     }
 
     @Test
     public void getUsers_whenPageSizeNotProvided_receivePageSizeAs10() {
-        ResponseEntity<TestPage<Object>> response = getUsers(new ParameterizedTypeReference<TestPage<Object>>() {});
+        ResponseEntity<TestPage<Object>> response = getUsers(new ParameterizedTypeReference<TestPage<Object>>() {
+        });
         assertThat(response.getBody().getSize()).isEqualTo(10);
     }
 
     @Test
     public void getUsers_whenPageSizeGreaterThan100_receivePageSizeAs100() {
         String path = API_1_0_USERS + "?page=0&size=500";
-        ResponseEntity<TestPage<Object>> response = getUsers(path, new ParameterizedTypeReference<TestPage<Object>>() {});
+        ResponseEntity<TestPage<Object>> response = getUsers(path, new ParameterizedTypeReference<TestPage<Object>>() {
+        });
         assertThat(response.getBody().getSize()).isEqualTo(100);
     }
 
     @Test
     public void getUsers_whenPageSizeIsNegative_receivePageSizeAs10() {
         String path = API_1_0_USERS + "?page=0&size=-5";
-        ResponseEntity<TestPage<Object>> response = getUsers(path, new ParameterizedTypeReference<TestPage<Object>>() {});
+        ResponseEntity<TestPage<Object>> response = getUsers(path, new ParameterizedTypeReference<TestPage<Object>>() {
+        });
         assertThat(response.getBody().getSize()).isEqualTo(10);
     }
 
     @Test
     public void getUsers_whenPageSizeIsNegative_receiveFirstPage() {
         String path = API_1_0_USERS + "?page=0&size=-5";
-        ResponseEntity<TestPage<Object>> response = getUsers(path, new ParameterizedTypeReference<TestPage<Object>>() {});
+        ResponseEntity<TestPage<Object>> response = getUsers(path, new ParameterizedTypeReference<TestPage<Object>>() {
+        });
         assertThat(response.getBody().getNumber()).isEqualTo(0);
     }
 
@@ -359,7 +366,8 @@ public class UserControllerTest {
         userService.save(TestUtil.createValidUser("user2"));
         userService.save(TestUtil.createValidUser("user3"));
         authenticate("user1");
-        ResponseEntity<TestPage<Object>> response = getUsers(new ParameterizedTypeReference<TestPage<Object>>() {});
+        ResponseEntity<TestPage<Object>> response = getUsers(new ParameterizedTypeReference<TestPage<Object>>() {
+        });
         assertThat(response.getBody().getTotalElements()).isEqualTo(2);
     }
 
@@ -559,7 +567,6 @@ public class UserControllerTest {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 
-
     @Test
     public void putUser_withValidRequestBodyWithJPGImageFromAuthorizedUser_receiveOk() throws IOException {
         User user = userService.save(TestUtil.createValidUser("user1"));
@@ -579,7 +586,7 @@ public class UserControllerTest {
         User user = userService.save(TestUtil.createValidUser("user1"));
         authenticate(user.getUsername());
         UserUpdateVM updatedUser = createValidUserUpdateVm();
-        String imageString = readFileToBase65("test-gif.gif");
+        String imageString = readFileToBase65("test-txt.txt");
         updatedUser.setImage(imageString);
 
         HttpEntity<UserUpdateVM> requestEntity = new HttpEntity<>(updatedUser);
