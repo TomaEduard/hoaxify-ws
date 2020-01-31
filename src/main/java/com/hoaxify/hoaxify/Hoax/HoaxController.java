@@ -1,12 +1,12 @@
 package com.hoaxify.hoaxify.Hoax;
 
+import com.hoaxify.hoaxify.Hoax.HoaxVM.HoaxVM;
 import com.hoaxify.hoaxify.shared.CurrentUser;
 import com.hoaxify.hoaxify.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -18,8 +18,22 @@ public class HoaxController {
     HoaxService hoaxService;
 
     @PostMapping("/hoaxes")
-    void createHoax(@Valid @RequestBody Hoax hoax, @CurrentUser User user) {
-        hoaxService.save(user, hoax);
+    HoaxVM createHoax(@Valid @RequestBody Hoax hoax, @CurrentUser User user) {
+        return new HoaxVM(hoaxService.save(user, hoax)) ;
+    }
+
+    @GetMapping("/hoaxes")
+    public Page<HoaxVM> getAllHoaxes(Pageable pageable) {
+        return hoaxService.getAllHoaxes(pageable).map(HoaxVM::new);
+    }
+
+    @GetMapping("/hoaxes/{id:[0-9]+}")
+    void getHoaxesRelative() {
+    }
+
+    @GetMapping("/users/{username}/hoaxes")
+    Page<HoaxVM> getHoaxesOfUser(@PathVariable String username, Pageable pageable) {
+        return hoaxService.getHoaxesOfUser(username, pageable).map(HoaxVM::new);
     }
 
 }
