@@ -1,6 +1,8 @@
 package com.hoaxify.hoaxify.Hoax;
 
 import com.hoaxify.hoaxify.Hoax.HoaxVM.HoaxVM;
+import com.hoaxify.hoaxify.file.FileAttachment;
+import com.hoaxify.hoaxify.file.FileAttachmentRepository;
 import com.hoaxify.hoaxify.user.User;
 import com.hoaxify.hoaxify.user.UserService;
 import org.springframework.data.domain.Page;
@@ -22,14 +24,22 @@ public class HoaxService {
 
     UserService userService;
 
-    public HoaxService(HoaxRepository hoaxRepository, UserService userService) {
+    FileAttachmentRepository fileAttachmentRepository;
+
+    public HoaxService(HoaxRepository hoaxRepository, UserService userService, FileAttachmentRepository fileAttachmentRepository) {
         this.hoaxRepository = hoaxRepository;
         this.userService = userService;
+        this.fileAttachmentRepository = fileAttachmentRepository;
     }
 
     public Hoax save(User user, Hoax hoax) {
         hoax.setTimestamp(new Date());
         hoax.setUser(user);
+        if (hoax.getAttachment() != null) {
+            FileAttachment inDb = fileAttachmentRepository.findById(hoax.getAttachment().getId()).get();
+            inDb.setHoax(hoax);
+            hoax.setAttachment(inDb);
+        }
         return hoaxRepository.save(hoax);
     }
 

@@ -6,10 +6,17 @@ import com.hoaxify.hoaxify.Hoax.HoaxService;
 import com.hoaxify.hoaxify.Hoax.HoaxVM.HoaxVM;
 import com.hoaxify.hoaxify.Utils.TestPage;
 import com.hoaxify.hoaxify.Utils.TestUtil;
+import com.hoaxify.hoaxify.configuration.AppConfiguration;
 import com.hoaxify.hoaxify.error.ApiError;
+import com.hoaxify.hoaxify.file.FileAttachment;
+import com.hoaxify.hoaxify.file.FileAttachmentRepository;
+import com.hoaxify.hoaxify.file.FileService;
 import com.hoaxify.hoaxify.user.User;
 import com.hoaxify.hoaxify.user.UserRepository;
 import com.hoaxify.hoaxify.user.UserService;
+import org.apache.commons.io.FileUtils;
+import org.aspectj.util.FileUtil;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,16 +24,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.support.BasicAuthenticationInterceptor;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceUnit;
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -40,6 +52,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class HoaxControllerTest {
 
     public static final String API_1_0_HOAXES = "/api/1.0/hoaxes";
+
     @Autowired
     TestRestTemplate testRestTemplate;
 
@@ -55,14 +68,31 @@ public class HoaxControllerTest {
     @Autowired
     HoaxService hoaxService;
 
+    @Autowired
+    FileAttachmentRepository fileAttachmentRepository;
+
+    @Autowired
+    AppConfiguration appConfiguration;
+
+    @Autowired
+    FileService fileService;
+
     @PersistenceUnit
     private EntityManagerFactory entityManagerFactory;
 
     @Before
-    public void cleanup() {
+    public void cleanup() throws IOException {
+        fileAttachmentRepository.deleteAll();
         hoaxRepository.deleteAll();
         userRepository.deleteAll();
         testRestTemplate.getRestTemplate().getInterceptors().clear();
+        FileUtils.cleanDirectory(new File(appConfiguration.getFullAttachmentsPath()));
+    }
+
+    @After
+    public void cleanupAfter() {
+        fileAttachmentRepository.deleteAll();
+        hoaxRepository.deleteAll();
     }
 
     @Test
@@ -245,6 +275,64 @@ public class HoaxControllerTest {
 
         ResponseEntity<HoaxVM> response = postHoax(hoax, HoaxVM.class);
         assertThat(response.getBody().getUser().getUsername()).isEqualTo("user1");
+    }
+
+    @Test
+    public void postHoax_whenHoaxHasFileAttachmentAndUserIsAuthorized_fileAttachmentHoaxRelationIsUpdatedInDatabase() throws IOException {
+        userService.save(TestUtil.createValidUser("user1"));
+        authenticate("user1");
+
+        MultipartFile file = createFile();
+
+        FileAttachment savedFile = fileService.saveAttachment(file);
+
+        Hoax hoax = TestUtil.createValidHoax();
+        hoax.setAttachment(savedFile);
+        ResponseEntity<HoaxVM> response = postHoax(hoax, HoaxVM.class);
+
+        FileAttachment inDb = fileAttachmentRepository.findAll().get(0);
+        assertThat(inDb.getHoax().getId()).isEqualTo(response.getBody().getId());
+    }
+
+    @Test
+    public void postHoax_whenHoaxHasFileAttachmentAndUserIsAuthorized_hoaxFileAttachmentRelationIsUpdatedInDatabase() throws IOException {
+        userService.save(TestUtil.createValidUser("user1"));
+        authenticate("user1");
+
+        MultipartFile file = createFile();
+
+        FileAttachment savedFile = fileService.saveAttachment(file);
+
+        Hoax hoax = TestUtil.createValidHoax();
+        hoax.setAttachment(savedFile);
+        ResponseEntity<HoaxVM> response = postHoax(hoax, HoaxVM.class);
+
+        Hoax inDb = hoaxRepository.findById(response.getBody().getId()).get();
+        assertThat(inDb.getAttachment().getId()).isEqualTo(savedFile.getId());
+    }
+
+    @Test
+    public void postHoax_whenHoaxHasFileAttachmentAndUserIsAuthorized_receiveHoaxVMWithAttachment() throws IOException {
+        userService.save(TestUtil.createValidUser("user1"));
+        authenticate("user1");
+
+        MultipartFile file = createFile();
+
+        FileAttachment savedFile = fileService.saveAttachment(file);
+
+        Hoax hoax = TestUtil.createValidHoax();
+        hoax.setAttachment(savedFile);
+        ResponseEntity<HoaxVM> response = postHoax(hoax, HoaxVM.class);
+
+        assertThat(response.getBody().getAttachment().getName()).isEqualTo(savedFile.getName());
+    }
+
+    // Util
+    private MultipartFile createFile() throws IOException {
+        ClassPathResource imageResource = new ClassPathResource("profile.png");
+        byte[] fileAsByte = FileUtils.readFileToByteArray(imageResource.getFile());
+
+        return new MockMultipartFile("profile.png", fileAsByte);
     }
 
     @Test
