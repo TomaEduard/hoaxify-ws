@@ -15,6 +15,7 @@ public class AuthUserService implements UserDetailsService {
     @Autowired
     UserRepository userRepository;
 
+    // TODO: change username to email
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByUsername(username);

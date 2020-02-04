@@ -22,7 +22,7 @@ public class ProfileImageValidator implements ConstraintValidator<ProfileImage, 
         String fileType = fileService.detectType(decodedByte);
         if (fileType.equalsIgnoreCase("image/png") ||
                 fileType.equalsIgnoreCase("image/jpeg")  ||
-                fileType.equalsIgnoreCase("image/gif")) {
+                fileType.equalsIgnoreCase("image/jpg")) {
             return true;
         }
 

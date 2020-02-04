@@ -2,11 +2,13 @@ package com.hoaxify.hoaxify.Hoax;
 
 import com.hoaxify.hoaxify.Hoax.HoaxVM.HoaxVM;
 import com.hoaxify.hoaxify.shared.CurrentUser;
+import com.hoaxify.hoaxify.shared.GenericResponse;
 import com.hoaxify.hoaxify.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -53,6 +55,13 @@ public class HoaxController {
         List<HoaxVM> newHoaxes = hoaxService.getNewHoaxes(id, username, pageable)
                 .stream().map(HoaxVM::new).collect(Collectors.toList());
         return ResponseEntity.ok(newHoaxes);
+    }
+
+    @DeleteMapping("/hoaxes/{id:[0-9]+}")
+    @PreAuthorize("@hoaxSecurityService.isAllowedToDelete(#id, principal)")
+    GenericResponse deleteHoax(@PathVariable long id) {
+        hoaxService.deleteHoax(id);
+        return new GenericResponse("Hoax is removed");
     }
 
 //    @GetMapping("/hoaxes/{id:[0-9]+}")
