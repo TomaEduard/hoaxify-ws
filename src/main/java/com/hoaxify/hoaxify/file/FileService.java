@@ -52,7 +52,6 @@ public class FileService {
         return imageName;
     }
 
-
     public String detectType(byte[] fileArr) {
         return tika.detect(fileArr);
     }

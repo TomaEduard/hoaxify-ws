@@ -34,14 +34,23 @@ hoaxify:
   upload-path: uploads-prod
 ---
 spring:
+  jpa:
+#    generate-ddl: true
+#    hibernate:
+#      ddl-auto: update
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
   profiles: dev
   datasource:
     url: jdbc:h2:mem:hoaxify-dev
 hoaxify:
   upload-path: uploads-dev
-datasource:
-  username: toma
-  password: toma
+#  upload-path: uploads-dev
+#datasource:
+#  username: toma
+#  password: toma
 ---
 spring:
   profiles: test

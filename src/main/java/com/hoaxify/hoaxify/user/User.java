@@ -2,6 +2,7 @@ package com.hoaxify.hoaxify.user;
 
 import com.hoaxify.hoaxify.Hoax.Hoax;
 import com.hoaxify.hoaxify.shared.UniqueUsername;
+import com.hoaxify.hoaxify.userPreference.UserPreference;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
@@ -43,6 +44,9 @@ public class User implements UserDetails {
 
     @OneToMany(mappedBy = "user")
     private List<Hoax> hoaxes;
+
+    @OneToMany(mappedBy = "user")
+    private List<UserPreference> userPreference;
 
     @Override
     @Transient

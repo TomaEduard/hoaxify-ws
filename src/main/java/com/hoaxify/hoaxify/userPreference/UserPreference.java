@@ -1,32 +1,39 @@
-package com.hoaxify.hoaxify.userPreferance;
+package com.hoaxify.hoaxify.userPreference;
 
 import com.hoaxify.hoaxify.Hoax.Hoax;
 import com.hoaxify.hoaxify.user.User;
 import lombok.Data;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @Data
-@Entity
+@Entity(name = "user_preference")
 public class UserPreference {
 
     @Id
     @GeneratedValue
     private long id;
 
-    private boolean favorite;
+    @NotNull
+    @Column(name = "favorite")
+    private boolean favorite = false;
 
-    private boolean like;
+    @NotNull
+    @Column(name = "likes")
+    private boolean like = false;
 
-    private boolean bookmark;
+    @NotNull
+    @Column(name = "bookmarks")
+    private boolean bookmark = false;
 
     @ManyToOne
+    @JoinColumn(name = "users_id")
     private User user;
 
     @ManyToOne
+//    @JoinColumn(name = "hoax_id")
     private Hoax hoax;
 
 }

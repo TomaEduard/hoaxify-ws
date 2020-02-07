@@ -6,6 +6,7 @@ import com.hoaxify.hoaxify.file.FileAttachmentRepository;
 import com.hoaxify.hoaxify.file.FileService;
 import com.hoaxify.hoaxify.user.User;
 import com.hoaxify.hoaxify.user.UserService;
+import com.hoaxify.hoaxify.userPreference.UserPreferenceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -30,11 +31,14 @@ public class HoaxService {
 
     FileService fileService;
 
-    public HoaxService(HoaxRepository hoaxRepository, UserService userService, FileAttachmentRepository fileAttachmentRepository, FileService fileService) {
+    UserPreferenceRepository userPreferenceRepository;
+
+    public HoaxService(HoaxRepository hoaxRepository, UserService userService, FileAttachmentRepository fileAttachmentRepository, FileService fileService, UserPreferenceRepository userPreferenceRepository) {
         this.hoaxRepository = hoaxRepository;
         this.userService = userService;
         this.fileAttachmentRepository = fileAttachmentRepository;
         this.fileService = fileService;
+        this.userPreferenceRepository = userPreferenceRepository;
     }
 
     public Hoax save(User user, Hoax hoax) {
@@ -57,76 +61,32 @@ public class HoaxService {
         return hoaxRepository.findByUser(inDB, pageable);
     }
 
-    public Page<Hoax> getOldHoaxes(long id, String username, Pageable pageable) {
-        Specification<Hoax> spec = Specification.where(idLessThan(id));
-        if (username != null) {
-            User inDB = userService.getUserByUsername(username);
-            spec = spec.and(userIs(inDB));
-        }
-        return hoaxRepository.findAll(spec, pageable);
+    public Page<Hoax> getOldHoaxes(long id, Pageable pageable) {
+        return hoaxRepository.findByIdLessThan(id, pageable);
     }
 
-//    public Page<Hoax> getOldHoaxes(long id, Pageable pageable) {
-//        return hoaxRepository.findByIdLessThan(id, pageable);
-//    }
-
-//    public Page<Hoax> getOldHoaxesOfUser(long id, String username, Pageable pageable) {
-//        User inDB = userService.getUserByUsername(username);
-//        return hoaxRepository.findByIdLessThanAndUser(id, inDB, pageable);
-//    }
-
-    public List<Hoax> getNewHoaxes(long id, String username, Pageable pageable) {
-        Specification<Hoax> spec = Specification.where(idGreaterThan(id));
-        if (username != null) {
-            User inDB = userService.getUserByUsername(username);
-            spec = spec.and(userIs(inDB));
-        }
-        return hoaxRepository.findAll(spec, pageable.getSort()) ;
+    public Page<Hoax> getOldHoaxesOfUser(long id, String username, Pageable pageable) {
+        User inDB = userService.getUserByUsername(username);
+        return hoaxRepository.findByIdLessThanAndUser(id, inDB, pageable);
     }
 
-//    public List<Hoax> getNewHoaxes(long id, Pageable pageable) {
-//        return hoaxRepository.findByIdGreaterThan(id, pageable.getSort());
-//    }
-
-//    public List<Hoax> getNewHoaxesOfUser(long id, String username, Pageable pageable) {
-//        User inDb = userService.getUserByUsername(username);
-//        return hoaxRepository.findByIdGreaterThanAndUser(id, inDb, pageable.getSort()) ;
-//    }
-
-    public long getNewHoaxesCount(long id, String username) {
-        Specification<Hoax> spec = Specification.where(idGreaterThan(id));
-        if (username != null) {
-            User inDB = userService.getUserByUsername(username);
-            spec = spec.and(userIs(inDB));
-        }
-        return hoaxRepository.count(spec);
+    public List<Hoax> getNewHoaxes(long id, Pageable pageable) {
+        return hoaxRepository.findByIdGreaterThan(id, pageable.getSort());
     }
 
-//    public long getNewHoaxesCount(long id) {
-//        return hoaxRepository.countByIdGreaterThan(id);
-//    }
+    public List<Hoax> getNewHoaxesOfUser(long id, String username, Pageable pageable) {
+        User inDb = userService.getUserByUsername(username);
 
-//    public long getNewHoaxesCountOfUser(long id, String username) {
-//        User inDb = userService.getUserByUsername(username);
-//        return hoaxRepository.countByIdGreaterThanAndUser(id, inDb);
-//    }
-
-    private Specification<Hoax> userIs(User user) {
-        return (root, criteriaQuery, criteriaBuilder) -> {
-            return criteriaBuilder.equal(root.get("user"), user);
-        };
+        return hoaxRepository.findByIdGreaterThanAndUser(id, inDb, pageable.getSort()) ;
     }
 
-    private Specification<Hoax> idLessThan(long id) {
-        return (root, criteriaQuery, criteriaBuilder) -> {
-            return criteriaBuilder.lessThan(root.get("id"), id);
-        };
+    public long getNewHoaxesCount(long id) {
+        return hoaxRepository.countByIdGreaterThan(id);
     }
 
-    private Specification<Hoax> idGreaterThan(long id) {
-        return (root, criteriaQuery, criteriaBuilder) -> {
-            return criteriaBuilder.greaterThan(root.get("id"), id);
-        };
+    public long getNewHoaxesCountOfUser(long id, String username) {
+        User inDb = userService.getUserByUsername(username);
+        return hoaxRepository.countByIdGreaterThanAndUser(id, inDb);
     }
 
     public void deleteHoax(long id) {
@@ -136,4 +96,51 @@ public class HoaxService {
         }
         hoaxRepository.deleteById(id);
     }
+
+    //    public Page<Hoax> getOldHoaxes(long id, String username, Pageable pageable) {
+//        Specification<Hoax> spec = Specification.where(idLessThan(id));
+//        if (username != null) {
+//            User inDB = userService.getUserByUsername(username);
+//            spec = spec.and(userIs(inDB));
+//        }
+//        return hoaxRepository.findAll(spec, pageable);
+//    }
+
+    //    public List<Hoax> getNewHoaxes(long id, String username, Pageable pageable) {
+//        Specification<Hoax> spec = Specification.where(idGreaterThan(id));
+//        if (username != null) {
+//            User inDB = userService.getUserByUsername(username);
+//            spec = spec.and(userIs(inDB));
+//        }
+//        return hoaxRepository.findAll(spec, pageable.getSort()) ;
+//    }
+
+//    public long getNewHoaxesCount(long id, String username) {
+//        Specification<Hoax> spec = Specification.where(idGreaterThan(id));
+//        if (username != null) {
+//            User inDB = userService.getUserByUsername(username);
+//            spec = spec.and(userIs(inDB));
+//        }
+//        return hoaxRepository.count(spec);
+//    }
+
+//    private Specification<Hoax> userIs(User user) {
+//        return (root, criteriaQuery, criteriaBuilder) -> {
+//            return criteriaBuilder.equal(root.get("user"), user);
+//        };
+//    }
+//
+//    private Specification<Hoax> idLessThan(long id) {
+//        return (root, criteriaQuery, criteriaBuilder) -> {
+//            return criteriaBuilder.lessThan(root.get("id"), id);
+//        };
+//    }
+//
+//    private Specification<Hoax> idGreaterThan(long id) {
+//        return (root, criteriaQuery, criteriaBuilder) -> {
+//            return criteriaBuilder.greaterThan(root.get("id"), id);
+//        };
+//    }
+
+
 }

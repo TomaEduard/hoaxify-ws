@@ -1,66 +1,49 @@
-package com.hoaxify.hoaxify.user;
+package com.hoaxify.hoaxify.userPreference;
 
+import com.hoaxify.hoaxify.Hoax.Hoax;
+import com.hoaxify.hoaxify.Hoax.HoaxRepository;
 import com.hoaxify.hoaxify.error.NotFoundException;
-import com.hoaxify.hoaxify.file.FileService;
-import com.hoaxify.hoaxify.user.userVM.UserUpdateVM;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import com.hoaxify.hoaxify.user.User;
+import com.hoaxify.hoaxify.user.UserRepository;
+import com.hoaxify.hoaxify.user.UserService;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
+import java.util.Collections;
 
 @Service
-public class UserService {
+public class UserPreferenceService {
+
+    UserPreferenceRepository userPreferenceRepository;
+
+    HoaxRepository hoaxRepository;
 
     UserRepository userRepository;
 
-    PasswordEncoder passwordEncoder;
+    UserService userService;
 
-    FileService fileService;
+    public UserPreference saveUserPreference(User loggedInUser, UserPreference userPreference, long id) {
+        Hoax inDBHoax = hoaxRepository.findById(id).get();
+        User inDBUser = userRepository.findByUsername(loggedInUser.getUsername());
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, FileService fileService) {
-        super();
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
-        this.fileService = fileService;
-    }
-
-    public User save(User user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        return userRepository.save(user);
-    }
-
-    public Page<User> getUser(User loggedInUser, Pageable pageable) {
-        if (loggedInUser != null) {
-            return userRepository.findByUsernameNot(loggedInUser.getUsername(), pageable);
-        }
-        return userRepository.findAll(pageable);
-    }
-
-    public User getUserByUsername(String username) {
-        User inDB = userRepository.findByUsername(username);
+        // verify if preference already exist in db for update
+        UserPreference inDB = userPreferenceRepository.findByHoaxIdAndUserId(inDBHoax.getId(), inDBUser.getId());
         if (inDB == null) {
-            throw new NotFoundException(username + " not found");
+            userPreference.setHoax(inDBHoax);
+            userPreference.setUser(inDBUser);
+            return userPreferenceRepository.save(userPreference);
         }
-        return inDB;
+
+        inDB.setFavorite(userPreference.isFavorite());
+        inDB.setLike(userPreference.isLike());
+        inDB.setBookmark(userPreference.isBookmark());
+        inDB.setHoax(inDBHoax);
+        return userPreferenceRepository.save(inDB);
     }
 
-    public User update(long id, UserUpdateVM userUpdateVM) {
-        User inDb = userRepository.getOne(id);
-        inDb.setDisplayName(userUpdateVM.getDisplayName());
-
-        if (userUpdateVM.getImage() != null) {
-            String savedImageName = null;
-            try {
-                savedImageName = fileService.saveProfileImage(userUpdateVM.getImage());
-                // remove the old picture
-                fileService.deleteProfileImage(inDb.getImage());
-                inDb.setImage(savedImageName);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        return userRepository.save(inDb);
+    public UserPreferenceService(UserPreferenceRepository userPreferenceRepository, HoaxRepository hoaxRepository, UserRepository userRepository) {
+        this.userPreferenceRepository = userPreferenceRepository;
+        this.hoaxRepository = hoaxRepository;
+        this.userRepository = userRepository;
     }
+
 }

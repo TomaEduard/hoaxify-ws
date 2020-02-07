@@ -2,6 +2,7 @@ package com.hoaxify.hoaxify;
 
 import com.hoaxify.hoaxify.user.User;
 import com.hoaxify.hoaxify.user.UserService;
+import com.hoaxify.hoaxify.userPreference.UserPreference;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -22,12 +23,18 @@ public class HoaxifyApplication {
     @Profile("dev") // it only run and make 15 object in dev mode
     CommandLineRunner run(UserService userService) {
         return (args) -> {
-            IntStream.rangeClosed(1, 15)
+            IntStream.rangeClosed(1, 5)
                     .mapToObj(i -> {
+//                        UserPreference userPreference = new UserPreference();
+//                        userPreference.setFavorite(false);
+//                        userPreference.setLike(false);
+//                        userPreference.setBookmark(false);
+
                         User user = new User();
                         user.setUsername("user" + i);
                         user.setDisplayName("display" + i);
                         user.setPassword("P4ssword");
+//                        user.setUserPreference(userPreference);
                         user.setImage(UUID.randomUUID().toString().replaceAll("-", ""));
                         return user;
                     })
