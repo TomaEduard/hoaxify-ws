@@ -21,6 +21,20 @@ public class UserPreferenceService {
 
     UserService userService;
 
+    public UserPreference saveUserPreferenceIfNotExist(User loggedInUser, Hoax hoax) {
+        User inDBUser = userRepository.findByUsername(loggedInUser.getUsername());
+
+        UserPreference userPreference = new UserPreference();
+        userPreference.setHoax(hoax);
+        userPreference.setUser(inDBUser);
+        // no need to set false cuz the value of field is private boolean like = false;
+//        userPreference.setFavorite(false);
+//        userPreference.setLike(false);
+//        userPreference.setBookmark(false);
+
+        return userPreferenceRepository.save(userPreference);
+    }
+
     public UserPreference saveUserPreference(User loggedInUser, UserPreference userPreference, long id) {
         Hoax inDBHoax = hoaxRepository.findById(id).get();
         User inDBUser = userRepository.findByUsername(loggedInUser.getUsername());
@@ -39,6 +53,8 @@ public class UserPreferenceService {
         inDB.setHoax(inDBHoax);
         return userPreferenceRepository.save(inDB);
     }
+
+
 
     public UserPreferenceService(UserPreferenceRepository userPreferenceRepository, HoaxRepository hoaxRepository, UserRepository userRepository) {
         this.userPreferenceRepository = userPreferenceRepository;

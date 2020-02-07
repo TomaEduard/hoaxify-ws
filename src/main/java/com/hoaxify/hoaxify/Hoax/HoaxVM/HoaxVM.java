@@ -8,6 +8,8 @@ import com.hoaxify.hoaxify.userPreference.userPreferenceVM.UserPreferenceVM;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Optional;
+
 @Data
 @NoArgsConstructor
 public class HoaxVM {
@@ -22,19 +24,18 @@ public class HoaxVM {
 
     private FileAttachmentVM attachment;
 
-    private UserPreference userPreference;
+    private UserPreferenceVM userPreference;
 
     public HoaxVM(Hoax hoax) {
         this.setId(hoax.getId());
         this.setContent(hoax.getContent());
         this.setDate(hoax.getTimestamp().getTime());
         this.setUser(new UserVM(hoax.getUser()));
-//        List<HoaxVM> newHoaxes = hoaxService.getNewHoaxes(id, pageable).stream().map(HoaxVM::new).collect(Collectors.toList());
-//        UserPreference userPreference = hoax.getUserPreference().get(0);
-//        this.setUserPreference(new UserPreferenceVM(hoax.getUserPreference()));
         if (hoax.getAttachment() != null) {
             this.setAttachment(new FileAttachmentVM(hoax.getAttachment()));
         }
+//        this.setUserPreference(new UserPreferenceVM((UserPreference) hoax.getUserPreference()));
+//        this.setUserPreference(new UserPreferenceVM(hoax.getUserPreference()));
 
     }
 }

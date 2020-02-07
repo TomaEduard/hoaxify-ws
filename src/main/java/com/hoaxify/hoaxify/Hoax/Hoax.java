@@ -34,6 +34,5 @@ public class Hoax {
     private FileAttachment attachment;
 
     @OneToMany(mappedBy = "hoax", orphanRemoval = true)
-//    @JoinColumn(name = "hoax")
     private List<UserPreference> userPreference;
 }

@@ -11,9 +11,10 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface HoaxRepository extends JpaRepository<Hoax, Long>, JpaSpecificationExecutor<Hoax> {
+//public interface HoaxRepository extends JpaRepository<Hoax, Long>, JpaSpecificationExecutor<Hoax> {
+public interface HoaxRepository extends JpaRepository<Hoax, Long> {
 
-
+//    Page<Hoax> findAlla(Pageable pageable, Sort sort);
 
     Page<Hoax> findByUser(User user, Pageable pageable);
 
@@ -30,6 +31,5 @@ public interface HoaxRepository extends JpaRepository<Hoax, Long>, JpaSpecificat
     long countByIdGreaterThan(long id);
 
     long countByIdGreaterThanAndUser(long id, User user);
-
 
 }

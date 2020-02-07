@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UserPreferenceVM {
 
-    private long id;
+//    private long id;
 
     private boolean favorite;
 
@@ -17,7 +17,7 @@ public class UserPreferenceVM {
     private boolean bookmark;
 
     public UserPreferenceVM(UserPreference userPreference) {
-        this.setId(userPreference.getId());
+//        this.setId(userPreference.getId());
         this.setFavorite(userPreference.isFavorite());
         this.setLike(userPreference.isLike());
         this.setBookmark(userPreference.isBookmark());

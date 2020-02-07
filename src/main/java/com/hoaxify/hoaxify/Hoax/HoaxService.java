@@ -5,8 +5,11 @@ import com.hoaxify.hoaxify.file.FileAttachment;
 import com.hoaxify.hoaxify.file.FileAttachmentRepository;
 import com.hoaxify.hoaxify.file.FileService;
 import com.hoaxify.hoaxify.user.User;
+import com.hoaxify.hoaxify.user.UserRepository;
 import com.hoaxify.hoaxify.user.UserService;
+import com.hoaxify.hoaxify.userPreference.UserPreference;
 import com.hoaxify.hoaxify.userPreference.UserPreferenceRepository;
+import com.hoaxify.hoaxify.userPreference.UserPreferenceResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,6 +20,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -32,6 +36,8 @@ public class HoaxService {
     FileService fileService;
 
     UserPreferenceRepository userPreferenceRepository;
+
+
 
     public HoaxService(HoaxRepository hoaxRepository, UserService userService, FileAttachmentRepository fileAttachmentRepository, FileService fileService, UserPreferenceRepository userPreferenceRepository) {
         this.hoaxRepository = hoaxRepository;
@@ -53,8 +59,24 @@ public class HoaxService {
     }
 
     public Page<Hoax> getAllHoaxes(Pageable pageable) {
-        return hoaxRepository.findAll(pageable);
+//        Page<Hoax> hoaxesInDb = hoaxRepository.findAlla(pageable, pageable.getSort());
+        Page<Hoax> hoaxesInDb = hoaxRepository.findAll(pageable);
+        return hoaxesInDb;
     }
+
+//    public Page<Hoax> getAllHoaxes(Pageable pageable, User loggedInUser) {
+//        Page<Hoax> hoaxesInDb = hoaxRepository.findAll(pageable);
+//        if (loggedInUser == null) {
+//            return hoaxesInDb;
+//        }
+//
+//        User userByUsername = userService.getUserByUsername(loggedInUser.getUsername());
+//        for (Hoax hoax : hoaxesInDb) {
+//            UserPreference byHoaxIdAndUserId = userPreferenceRepository.findByHoaxIdAndUserId(hoax.getId(), userByUsername.getId());
+//            hoax.setUserPreference((List<UserPreference>) byHoaxIdAndUserId);
+//        }
+//        return hoaxesInDb;
+//    }
 
     public Page<Hoax> getHoaxesOfUser(String username, Pageable pageable) {
         User inDB = userService.getUserByUsername(username);

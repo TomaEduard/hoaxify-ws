@@ -33,7 +33,7 @@ public class UserPreference {
     private User user;
 
     @ManyToOne
-//    @JoinColumn(name = "hoax_id")
+    @JoinColumn(name = "hoax_id")
     private Hoax hoax;
 
 }
