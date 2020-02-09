@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @RestController
 @RequestMapping("/api/1.0")
@@ -93,12 +94,6 @@ public class HoaxController {
                 if(userPreference != null){
                     hoaxVM.setUserPreference(new UserPreferenceVM(userPreference));
                 }
-                // if the user has no preference, will create a preference object with false values and saved + return
-//                if (userPreference == null) {
-//                    UserPreference userPreferenceFalse = userPreferenceService.saveUserPreferenceIfNotExist(loggedInUser, hoax);
-//                    hoaxVM.setUserPreference(new UserPreferenceVM(userPreferenceFalse));
-//                }
-                // if the user has no preference, will create a preference object with false values and return
                 if (userPreference == null) {
                     UserPreference userPreferenceFalse = userPreferenceService.returnUserPreferenceIfNotExistWithoutSaving(loggedInUser, hoax);
                     hoaxVM.setUserPreference(new UserPreferenceVM(userPreferenceFalse));
@@ -113,48 +108,52 @@ public class HoaxController {
                                         @PathVariable long id, Pageable pageable,
                                         @RequestParam(name="direction", defaultValue="after") String direction,
                                         @RequestParam(name = "count", defaultValue = "false", required = false) boolean count) {
-
         if(!direction.equalsIgnoreCase("after")) {
-            return (ResponseEntity<?>) hoaxService.getOldHoaxes(id, pageable).map(hoax -> {
+            // so here, for just to make this part readable instead of immediately returning this line,
+            // lets assign it to a variable first.
+            // think it like the implementation in @GetMapping("/hoaxes")
+            // we have a page response. And we are mapping Hoax to HoaxVM in this part
+            Page<HoaxVM> pageResponse = hoaxService.getOldHoaxes(id, pageable).map(hoax -> {
                 HoaxVM hoaxVM = new HoaxVM(hoax);
-
                 if (loggedInUser != null) {
-                    // find if loggedInUser have preference of this hoax and save it
                     UserPreference userPreference = userPreferenceRepository.findByHoaxIdAndUserId(hoax.getId(), loggedInUser.getId());
                     if(userPreference != null){
                         hoaxVM.setUserPreference(new UserPreferenceVM(userPreference));
                     }
-                    // if the user has no preference, will create a preference object with false values
                     if (userPreference == null) {
                         UserPreference userPreferenceFalse = userPreferenceService.saveUserPreferenceIfNotExist(loggedInUser, hoax);
                         hoaxVM.setUserPreference(new UserPreferenceVM(userPreferenceFalse));
                     }
                 }
-                return ResponseEntity.ok(hoaxVM);
+                return hoaxVM; // you shouldn't be returning ResponseEntity.ok(hoaxVM) here
             });
-        }
-        if (count) {
-            long newHoaxCount = hoaxService.getNewHoaxesCount(id);
-            return ResponseEntity.ok(Collections.singletonMap("count", newHoaxCount));
+            // then we can return our ResponseEntity with our page object
+            return ResponseEntity.ok(pageResponse);
         }
 
-        return (ResponseEntity<?>) hoaxService.getNewHoaxes(id, pageable).stream().map(hoax -> {
+        // the getNewHoaxes part is returning List<Hoax> .. so in this one it will be like
+        Stream<Object> newHoaxes = hoaxService.getNewHoaxes(id, pageable).stream().map(hoax -> {
             HoaxVM hoaxVM = new HoaxVM(hoax);
-
             if (loggedInUser != null) {
                 UserPreference userPreference = userPreferenceRepository.findByHoaxIdAndUserId(hoax.getId(), loggedInUser.getId());
                 // find if loggedInUser have preference of this hoax and save it
                 if (userPreference != null) {
                     hoaxVM.setUserPreference(new UserPreferenceVM(userPreference));
+//                    HoaxVM hoaxVM = new HoaxVM(hoax);
+//                    hoaxVM.setUserPreference(new UserPreferenceVM(userPreference));
                 }
                 // if the user has no preference, will create a preference object with false values and return
                 if (userPreference == null) {
                     UserPreference userPreferenceFalse = userPreferenceService.returnUserPreferenceIfNotExistWithoutSaving(loggedInUser, hoax);
-                    hoaxVM.setUserPreference(new UserPreferenceVM(userPreferenceFalse));
+                        hoaxVM.setUserPreference(new UserPreferenceVM(userPreferenceFalse));
+//                    HoaxVM hoaxVM = new HoaxVM(hoax);
+//                    hoaxVM.setUserPreference(new UserPreferenceVM(userPreferenceFalse));
                 }
             }
-            return ResponseEntity.ok(hoaxVM);
+            return hoaxVM; // again returning hoaxVM here.. not ResponseEntity.
         });
+        // then
+        return ResponseEntity.ok(newHoaxes);
     }
 
 /*
