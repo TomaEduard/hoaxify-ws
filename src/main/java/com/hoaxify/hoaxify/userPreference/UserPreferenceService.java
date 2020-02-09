@@ -27,12 +27,25 @@ public class UserPreferenceService {
         UserPreference userPreference = new UserPreference();
         userPreference.setHoax(hoax);
         userPreference.setUser(inDBUser);
-        // no need to set false cuz the value of field is private boolean like = false;
+        // no need to set false cuz the the Entity have default false
 //        userPreference.setFavorite(false);
 //        userPreference.setLike(false);
 //        userPreference.setBookmark(false);
 
         return userPreferenceRepository.save(userPreference);
+    }
+
+    public UserPreference returnUserPreferenceIfNotExistWithoutSaving(User loggedInUser, Hoax hoax) {
+        User inDBUser = userRepository.findByUsername(loggedInUser.getUsername());
+
+        UserPreference userPreference = new UserPreference();
+        userPreference.setHoax(hoax);
+        userPreference.setUser(inDBUser);
+        userPreference.setFavorite(false);
+        userPreference.setLike(false);
+        userPreference.setBookmark(false);
+
+        return userPreference;
     }
 
     public UserPreference saveUserPreference(User loggedInUser, UserPreference userPreference, long id) {
