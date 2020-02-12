@@ -26,8 +26,10 @@ public class User implements UserDetails {
     @GeneratedValue
     private long id;
 
+
     @NotNull(message = "{hoaxify.constraints.username.NotNull.message}")
     @Size(min = 4, max = 255)
+    @Pattern(regexp=".+@.+\\..+", message="Please provide a valid email address")
     @UniqueUsername
     private String username;
 
@@ -41,6 +43,11 @@ public class User implements UserDetails {
     private String password;
 
     private String image;
+
+    private String emailVerificationToken = "";
+
+    @NotNull
+    private Boolean emailVerificationStatus = false;
 
     @OneToMany(mappedBy = "user")
     private List<Hoax> hoaxes;

@@ -4,6 +4,12 @@ target/
 !**/src/main/**
 !**/src/test/**
 
+######################
+# Java Application
+######################
+#src/main/java/com/springframework/security/SecurityConstants.java
+src/main/java/com/hoaxify/hoaxify/configuration/SecurityConstants.java
+
 ### STS ###
 .apt_generated
 .classpath

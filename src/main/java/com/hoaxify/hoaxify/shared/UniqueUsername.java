@@ -9,7 +9,7 @@ import java.lang.annotation.Target;
 
 @Constraint(validatedBy = UniqueUsernameValidator.class) // validation annotation
 @Target(ElementType.FIELD) // define where the annotation can be use
-@Retention(RetentionPolicy.RUNTIME)// tell JVM to persist annotation in runntime
+@Retention(RetentionPolicy.RUNTIME)// tell JVM to persist annotation in runtime
 public @interface UniqueUsername {
 	
 	String message() default "{hoaxify.constraints.username.UniqueUsername.message}";

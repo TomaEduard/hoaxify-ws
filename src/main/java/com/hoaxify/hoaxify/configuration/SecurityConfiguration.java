@@ -29,11 +29,15 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .cors().and()
 
                 .authorizeRequests()
+//                    .antMatchers(HttpMethod.POST, "/api/1.0/users").permitAll()
                     .antMatchers(HttpMethod.POST, "/api/1.0/login").authenticated()
                     .antMatchers(HttpMethod.PUT, "/api/1.0/users/{id:[0-9]+}").authenticated()
                     .antMatchers(HttpMethod.POST, "/api/1.0/hoaxes/**").authenticated()
                     .antMatchers(HttpMethod.DELETE, "/api/1.0/hoaxes/{id:[0-9]+}").authenticated()
                     .antMatchers(HttpMethod.POST, "/api/1.0/preference/{id:[0-9]+}").authenticated()
+
+                    // email-verification
+                    .antMatchers(HttpMethod.GET, "/api/1.0/users/email-verification/**").authenticated()
                 .and()
                 .authorizeRequests().anyRequest().permitAll();
 

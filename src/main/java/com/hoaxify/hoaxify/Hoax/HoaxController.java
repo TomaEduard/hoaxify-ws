@@ -25,6 +25,7 @@ import java.util.stream.Stream;
 
 @RestController
 @RequestMapping("/api/1.0")
+@CrossOrigin
 public class HoaxController {
 
     @Autowired
@@ -42,7 +43,6 @@ public class HoaxController {
     @PostMapping("/hoaxes")
     HoaxVM createHoax(@Valid @RequestBody Hoax hoax, @CurrentUser User user) {
         return new HoaxVM(hoaxService.save(user, hoax)) ;
-
     }
 
     @GetMapping("/users/{username}/hoaxes")
@@ -108,6 +108,11 @@ public class HoaxController {
                                         @PathVariable long id, Pageable pageable,
                                         @RequestParam(name="direction", defaultValue="after") String direction,
                                         @RequestParam(name = "count", defaultValue = "false", required = false) boolean count) {
+
+        if (count) {
+            long newHoaxCount = hoaxService.getNewHoaxesCount(id);
+            return ResponseEntity.ok(Collections.singletonMap("count", newHoaxCount));
+        }
         if(!direction.equalsIgnoreCase("after")) {
             // so here, for just to make this part readable instead of immediately returning this line,
             // lets assign it to a variable first.
@@ -142,6 +147,7 @@ public class HoaxController {
 //                    HoaxVM hoaxVM = new HoaxVM(hoax);
 //                    hoaxVM.setUserPreference(new UserPreferenceVM(userPreference));
                 }
+
                 // if the user has no preference, will create a preference object with false values and return
                 if (userPreference == null) {
                     UserPreference userPreferenceFalse = userPreferenceService.returnUserPreferenceIfNotExistWithoutSaving(loggedInUser, hoax);
@@ -181,7 +187,7 @@ public class HoaxController {
                 }
                 return ResponseEntity.ok(hoaxVM);
             });
-        }
+        }count
         if (count) {
             long newHoaxCount = hoaxService.getNewHoaxesCount(id);
             return ResponseEntity.ok(Collections.singletonMap("count", newHoaxCount));

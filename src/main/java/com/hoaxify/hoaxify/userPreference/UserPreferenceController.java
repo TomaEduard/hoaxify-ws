@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/1.0")
+@CrossOrigin
 public class UserPreferenceController {
 
     @Autowired

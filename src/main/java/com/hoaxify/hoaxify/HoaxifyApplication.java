@@ -19,26 +19,33 @@ public class HoaxifyApplication {
         SpringApplication.run(HoaxifyApplication.class, args);
     }
 
-    @Bean
-    @Profile("dev") // it only run and make 15 object in dev mode
-    CommandLineRunner run(UserService userService) {
-        return (args) -> {
-            IntStream.rangeClosed(1, 5)
-                    .mapToObj(i -> {
-//                        UserPreference userPreference = new UserPreference();
-//                        userPreference.setFavorite(false);
-//                        userPreference.setLike(false);
-//                        userPreference.setBookmark(false);
-
-                        User user = new User();
-                        user.setUsername("user" + i);
-                        user.setDisplayName("display" + i);
-                        user.setPassword("P4ssword");
-//                        user.setUserPreference(userPreference);
-                        user.setImage(UUID.randomUUID().toString().replaceAll("-", ""));
-                        return user;
-                    })
-                    .forEach(userService::save);
-        };
-    }
+//    @Bean
+//    @Profile("dev") // it only run and make 15 object in dev mode
+//    CommandLineRunner run(UserService userService) {
+//        return (args) -> {
+//            IntStream.rangeClosed(1, 4)
+//                .mapToObj(i -> {
+////                    UserPreference userPreference = new UserPreference();
+////                    userPreference.setFavorite(false);
+////                    userPreference.setLike(false);
+////                    userPreference.setBookmark(false);
+//
+//                    User user = new User();
+//                    user.setUsername("user" + i);
+//                    user.setDisplayName("display" + i);
+//                    user.setPassword("P4ssword");
+////                        user.setUserPreference(userPreference);
+//                    user.setImage(UUID.randomUUID().toString().replaceAll("-", ""));
+//                    return user;
+//                })
+//                .forEach(userService::saveUserAndVerificationStatusTrueWithoutAWS);
+//
+//            User user = new User();
+//            user.setUsername("eduard.daniel.toma@gmail.com");
+//            user.setDisplayName("display5");
+//            user.setPassword("P4ssword");
+//            user.setImage(UUID.randomUUID().toString().replaceAll("-", ""));
+//            userService.saveUserAndVerificationStatusFalseWithoutAWS(user);
+//        };
+//    }
 }

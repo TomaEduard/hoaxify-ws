@@ -16,11 +16,14 @@ public class UserVM {
 
     private String image;
 
+    private Boolean emailVerificationStatus;
+
     public UserVM(User user) {
         this.setId(user.getId());
         this.setUsername(user.getUsername());
         this.setDisplayName(user.getDisplayName());
         this.setImage(user.getImage());
+        this.setEmailVerificationStatus(user.getEmailVerificationStatus());
     }
 
 }
