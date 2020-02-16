@@ -2,6 +2,7 @@ package com.hoaxify.hoaxify.user;
 
 import com.hoaxify.hoaxify.Hoax.Hoax;
 import com.hoaxify.hoaxify.shared.UniqueUsername;
+import com.hoaxify.hoaxify.verificationToken.VerificationToken;
 import com.hoaxify.hoaxify.userPreference.UserPreference;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
@@ -26,7 +27,6 @@ public class User implements UserDetails {
     @GeneratedValue
     private long id;
 
-
     @NotNull(message = "{hoaxify.constraints.username.NotNull.message}")
     @Size(min = 4, max = 255)
     @Pattern(regexp=".+@.+\\..+", message="Please provide a valid email address")
@@ -48,6 +48,9 @@ public class User implements UserDetails {
 
     @NotNull
     private Boolean emailVerificationStatus = false;
+
+    @OneToOne(mappedBy = "user", orphanRemoval = true)
+    private VerificationToken verificationToken;
 
     @OneToMany(mappedBy = "user")
     private List<Hoax> hoaxes;

@@ -6,6 +6,7 @@ import com.amazonaws.services.simpleemail.AmazonSimpleEmailServiceClientBuilder;
 import com.amazonaws.services.simpleemail.model.*;
 import com.hoaxify.hoaxify.configuration.SecurityConstants;
 import com.hoaxify.hoaxify.user.User;
+import com.hoaxify.hoaxify.verificationToken.VerificationToken;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -35,6 +36,36 @@ public class AmazonSES {
 //            + " http://ec2-52-59-187-214.eu-central-1.compute.amazonaws.com:8080/verification-service/email-verification.html?token=$tokenValue"
             + "<a href='http://localhost:3000/#/verification/confirmationToken?token=$tokenValue'>"
             + " Thank you! And we are waiting for you inside!";
+
+//    $userId
+    final String HTMLBODY_CHANGE_EMAIL = "Hello, "
+            + "<p>You're receiving this email because someone (hopefully you) requested to change your email. "
+            + "If you did not request this, please disregard this email. "
+
+            + "<br/>"
+            + "This confirmation link is valid for 10 days and can be used only once. "
+            + "<br/>"
+            + "If you would like to continue and change it, please click the following link:"
+//            + "<a href='http://ec2-52-59-187-214.eu-central-1.compute.amazonaws.com:8080/verification-service/email-verification.html?token=$tokenValue'>"
+            + "<a href='http://localhost:3000/#/verification/changeEmail?token=$tokenValue'>"
+            + " Click here to redirect for change your email.</a>"
+
+            + "<br/><br/>"
+            + "<p>You are receiving this email because you are a registered user on Hoaxify App.";
+
+    final String TEXTBODY_CHANGE_EMAIL = "<h1>Hello, </h1>"
+            + "You're receiving this email because someone (hopefully you) requested to change your email. "
+            + "If you did not request this, please disregard this email. This confirmation link is valid for 10 days and can be used only once."
+            + "<br/>"
+            + "If you would like to continue and change it, please click the following link:"
+//            + "<a href='http://ec2-52-59-187-214.eu-central-1.compute.amazonaws.com:8080/verification-service/email-verification.html?token=$tokenValue'>"
+            + "<a href='http://localhost:3000/#/verification/changeEmail?token=$tokenValue'>"
+            + " Click here to redirect for change your email.</a>"
+
+            + "<br/><br/>"
+            + "You are receiving this email because you are a registered user on Hoaxify App.";
+
+
 
     // password reset messages
     final String PASSWORD_RESET_HTMLBODY = "<h1>A request to reset your password</h1>"
@@ -81,6 +112,43 @@ public class AmazonSES {
         System.out.println("Email sent to: " + user.getUsername());
 
     }
+
+    public void changeEmail(VerificationToken verificationToken, User user) {
+
+        System.setProperty("aws.accessKeyId", SecurityConstants.ACCESS_KEY_ID);
+        System.setProperty("aws.secretKey", SecurityConstants.SECRET_KEY);
+
+        AmazonSimpleEmailService client = AmazonSimpleEmailServiceClientBuilder.standard().withRegion(Regions.EU_CENTRAL_1).build();
+
+//        String htmlBodyWithToken = HTMLBODY.replace("$tokenValue", user.getEmailVerificationToken());
+//        String textBodyWithToken = TEXTBODY.replace("$tokenValue", user.getEmailVerificationToken());
+
+        String htmlBodyWithToken = HTMLBODY_CHANGE_EMAIL.replace("$tokenValue", verificationToken.getChangeEmailToken());
+//        String htmlBodyWithToken2 = HTMLBODY_CHANGE_EMAIL.replace("$userId", verificationToken.getId());
+        String textBodyWithToken = TEXTBODY_CHANGE_EMAIL.replace("$tokenValue", verificationToken.getChangeEmailToken());
+
+        SendEmailRequest request = new SendEmailRequest()
+                // set destination
+                .withDestination(new Destination().withToAddresses(user.getUsername()))
+                // set messages
+                .withMessage(new Message()
+                        .withBody(new Body().withHtml(new Content().withCharset("UTF-8").withData(htmlBodyWithToken))
+                        .withText(new Content().withCharset("UTF-8").withData(textBodyWithToken)))
+                        .withSubject(new Content().withCharset("UTF-8").withData(SUBJECT)))
+                // set from
+                .withSource(FROM);
+
+        client.sendEmail(request);
+
+        System.out.println("Email sent to: " + user.getUsername());
+
+    }
+
+
+
+
+
+
 
     public boolean sendPasswordResetRequest(String firstName, String email, String token) {
 

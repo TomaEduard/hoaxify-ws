@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Profile;
 import java.util.UUID;
 import java.util.stream.IntStream;
 
+
 @SpringBootApplication
 public class HoaxifyApplication {
 
@@ -19,33 +20,49 @@ public class HoaxifyApplication {
         SpringApplication.run(HoaxifyApplication.class, args);
     }
 
-//    @Bean
-//    @Profile("dev") // it only run and make 15 object in dev mode
-//    CommandLineRunner run(UserService userService) {
-//        return (args) -> {
-//            IntStream.rangeClosed(1, 4)
-//                .mapToObj(i -> {
-////                    UserPreference userPreference = new UserPreference();
-////                    userPreference.setFavorite(false);
-////                    userPreference.setLike(false);
-////                    userPreference.setBookmark(false);
-//
-//                    User user = new User();
-//                    user.setUsername("user" + i);
-//                    user.setDisplayName("display" + i);
-//                    user.setPassword("P4ssword");
-////                        user.setUserPreference(userPreference);
-//                    user.setImage(UUID.randomUUID().toString().replaceAll("-", ""));
-//                    return user;
-//                })
-//                .forEach(userService::saveUserAndVerificationStatusTrueWithoutAWS);
-//
+    @Bean
+    @Profile("dev") // it only run and make 15 object in dev mode
+    CommandLineRunner run(UserService userService) {
+        return (args) -> {
+            IntStream.rangeClosed(1, 4)
+                .mapToObj(i -> {
+//                    UserPreference userPreference = new UserPreference();
+//                    userPreference.setFavorite(false);
+//                    userPreference.setLike(false);
+//                    userPreference.setBookmark(false);
+
+                    User user = new User();
+                    user.setUsername("user" + i);
+                    user.setDisplayName("display_user" + i);
+                    user.setPassword("P4ssword");
+//                        user.setUserPreference(userPreference);
+                    user.setImage(UUID.randomUUID().toString().replaceAll("-", ""));
+                    return user;
+                })
+                .forEach(userService::saveUserAndVerificationStatusTrueWithoutAWS);
+
+            User user5 = new User();
+            user5.setUsername("user5");
+            user5.setDisplayName("display_user5");
+            user5.setPassword("P4ssword");
+            user5.setImage(UUID.randomUUID().toString().replaceAll("-", ""));
+            userService.saveUserAndVerificationStatusFalseWithoutAWS(user5);
+
+            User user6 = new User();
+            user5.setUsername("eduard.daniel.toma@gmail.com");
+            user5.setDisplayName("Eduard Toma");
+            user5.setPassword("P4ssword");
+            user5.setImage(UUID.randomUUID().toString().replaceAll("-", ""));
+            userService.saveUserAndVerificationStatusFalseWithoutAWS(user5);
+
 //            User user = new User();
-//            user.setUsername("eduard.daniel.toma@gmail.com");
-//            user.setDisplayName("display5");
+//            user.setUsername("user1");
+//            user.setDisplayName("display_user1");
 //            user.setPassword("P4ssword");
 //            user.setImage(UUID.randomUUID().toString().replaceAll("-", ""));
 //            userService.saveUserAndVerificationStatusFalseWithoutAWS(user);
-//        };
-//    }
+//
+
+        };
+    }
 }

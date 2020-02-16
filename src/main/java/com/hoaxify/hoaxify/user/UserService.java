@@ -1,22 +1,21 @@
 package com.hoaxify.hoaxify.user;
 
-import com.hoaxify.hoaxify.configuration.SecurityConstants;
 import com.hoaxify.hoaxify.error.NotFoundException;
 import com.hoaxify.hoaxify.file.FileService;
-//import com.hoaxify.hoaxify.shared.Utils;
 import com.hoaxify.hoaxify.shared.AmazonSES;
 import com.hoaxify.hoaxify.shared.Utils;
+import com.hoaxify.hoaxify.shared.request.UpdateEmail;
 import com.hoaxify.hoaxify.user.userVM.UserUpdateVM;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.hoaxify.hoaxify.verificationToken.VerificationToken;
+import com.hoaxify.hoaxify.verificationToken.VerificationTokenService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.Date;
+
+//import com.hoaxify.hoaxify.shared.Utils;
 
 @Service
 public class UserService {
@@ -29,12 +28,15 @@ public class UserService {
 
     AmazonSES amazonSES;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, FileService fileService, AmazonSES amazonSES) {
+    VerificationTokenService verificationTokenService;
+
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, FileService fileService, AmazonSES amazonSES, VerificationTokenService verificationTokenService) {
         super();
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.fileService = fileService;
         this.amazonSES = amazonSES;
+        this.verificationTokenService = verificationTokenService;
     }
 
     public User save(User user) {
@@ -99,9 +101,69 @@ public class UserService {
         return returnValue;
     }
 
+    public boolean changeEmailById(long id) {
+        boolean returnValue = false;
+        try {
+            // #1 iei userul cu id'ul din baza
+            User userDB = userRepository.findById(id).get();
+
+            // #2 creezi un obiect VerificationToken si ii adaugi userul si tokenul
+            VerificationToken verificationToken = new VerificationToken();
+            verificationToken.setUser(userDB);
+            verificationToken.setChangeEmailToken(new Utils().generateEmailVerificationToken(userDB.getUsername()));
+
+            // #4 salvezi oebiectul in baza
+            verificationTokenService.saveChangeEmailToken(verificationToken);
+
+//            userDB.setVerificationToken(verificationToken);
+//            userRepository.save(userDB);
+
+            // #5 trimiti email cu tokenul
+            amazonSES.changeEmail(verificationToken, userDB);
+
+            returnValue = true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return returnValue;
+    }
+
+    public boolean changeEmail(User loggedInUser, UpdateEmail updateEmail) {
+        boolean returnValue = false;
+        try {
+//            User inDb = userRepository.getOne(id);
+            User inDb = userRepository.findByUsername(loggedInUser.getUsername());
+            inDb.setUsername(updateEmail.getNewEmail());
+            userRepository.save(inDb);
+            returnValue = true;
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+        }
+
+        return returnValue;
+    }
+
+//    public User update(long id, UserUpdateVM userUpdateVM) {
+//        User inDb = userRepository.getOne(id);
+//        inDb.setDisplayName(userUpdateVM.getDisplayName());
+//
+//        if (userUpdateVM.getImage() != null) {
+//            String savedImageName = null;
+//            try {
+//                savedImageName = fileService.saveProfileImage(userUpdateVM.getImage());
+//                // remove the old picture
+//                fileService.deleteProfileImage(inDb.getImage());
+//                inDb.setImage(savedImageName);
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//        return userRepository.save(inDb);
+//    }
+
     /*
-    * Utils
-    * */
+     * Utils
+     * */
     public User saveUserAndVerificationStatusTrueWithoutAWS(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setEmailVerificationToken("TEST");
@@ -122,22 +184,16 @@ public class UserService {
 
     public boolean verifyEmailToken(String token) {
         boolean returnValue = false;
-
-        System.out.println("#1");
         // find user by token
         User userDB = userRepository.findUserByEmailVerificationToken(token);
-
-        System.out.println("#2");
         // verify token expired date
         boolean hasTokenExpired = Utils.hasTokenExpired(token);
-        System.out.println("#3");
 
         if (!hasTokenExpired) {
             userDB.setEmailVerificationToken(null);
             userDB.setEmailVerificationStatus(Boolean.TRUE);
             userRepository.save(userDB);
             returnValue = true;
-            System.out.println("#4");
         }
 
         return returnValue;

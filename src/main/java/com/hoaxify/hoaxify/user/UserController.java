@@ -2,8 +2,10 @@ package com.hoaxify.hoaxify.user;
 
 import com.hoaxify.hoaxify.shared.CurrentUser;
 import com.hoaxify.hoaxify.shared.GenericResponse;
+import com.hoaxify.hoaxify.shared.request.UpdateEmail;
 import com.hoaxify.hoaxify.user.userVM.UserUpdateVM;
 import com.hoaxify.hoaxify.user.userVM.UserVM;
+import com.hoaxify.hoaxify.verificationToken.VerificationTokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,6 +25,9 @@ public class UserController {
     @Autowired
     UserService userService;
 
+    @Autowired
+    VerificationTokenService verificationTokenService;
+
     @PostMapping("/users")
     GenericResponse createUser(@Valid @RequestBody User user) {
         userService.save(user);
@@ -40,6 +45,8 @@ public class UserController {
         return new UserVM(user);
     }
 
+
+    // TODO: need implement another endpoint for password
     @PutMapping("/users/{id:[0-9]+}")
     @PreAuthorize("#id == principal.id")
     UserVM updateUserDisplaynameAndImage(@PathVariable long id, @Valid @RequestBody(required = false) UserUpdateVM userUpdateVM) {
@@ -47,15 +54,14 @@ public class UserController {
         return new UserVM(updated);
     }
 
-    /*
-    * email-verification: resend, confirmation
-    * */
+
+    // generate new token, save it over the old one at db and send email with it to specific page for validated email
     @PostMapping(path = "/users/email-verification/confirmation/{id:[0-9]+}")
     @PreAuthorize("#id == principal.id")
     public ResponseEntity<?> renewAndResendEmailConfirmation(@PathVariable long id) {
         try {
-            boolean isSentWithSuccess = userService.resendEmailById(id);
-            if (isSentWithSuccess) {
+            boolean isSaveToDBAndSentWithSuccess = userService.resendEmailById(id);
+            if (isSaveToDBAndSentWithSuccess) {
                 System.out.println("Email Resending was successfully!");
                 return ResponseEntity.ok(Collections.singletonMap("value", "SUCCESS"));
             }
@@ -65,9 +71,9 @@ public class UserController {
         }
         return null;
     }
-
+    // validated email page send token from #1 to this endpoint
     @GetMapping(path = "/users/email-verification/confirmationToken/{token}")
-    public ResponseEntity verifyEmailToken(@PathVariable String token) {
+    public ResponseEntity verifyEmailTokenForEmailVerification(@PathVariable String token) {
         try {
             boolean isVerified = userService.verifyEmailToken(token);
 
@@ -77,37 +83,49 @@ public class UserController {
             }
         } catch (Exception e) {
             System.out.println("FAILING");
-//            return ResponseEntity.ok(Collections.singletonMap("value", "FAILING"));
-
-//            Map<String, String> validationErrors = new HashMap<>(); 
-//            validationErrors.put("ERROR", "ERROR")
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
-
         return ResponseEntity.ok(Collections.singletonMap("value", "UNDEFINED"));
     }
 
-//    @GetMapping(path = "/email-verification",
-//            produces = {MediaType.APPLICATION_JSON_VALUE,
-//                    MediaType.APPLICATION_XML_VALUE})
-//    public OperationStatusModel verifyEmailToken(@RequestParam(value = "token") String token) {
-//
-//        OperationStatusModel returnValue = new OperationStatusModel();
-//        returnValue.setOperationName(RequestOperationName.VERIFY_EMAIL.name());
-//
-//        try {
-//            boolean isVerifreturnValueied = userService.verifyEmailToken(token);
-//
-//            if (isVerified) {
-//                System.out.println("SUCCESS");
-//                returnValue.setOperationResult(RequestOperationStatus.SUCCESS.name());
-//            }
-//
-//        } catch (Exception e) {
-//            System.out.println("FAILING");
-//            returnValue.setOperationResult(RequestOperationStatus.ERROR.name());
-//        }
-//
-//        return returnValue;
-//    }
+    // generate new token, save it over the old one at db and send email with it to specific page for change email
+    // this page have 2 fields
+    // generate new token and send email with it to specific page for validated email
+    @PostMapping(path = "/users/email-verification/changeEmail/{id:[0-9]+}")
+    @PreAuthorize("#id == principal.id")
+    public ResponseEntity<?> ChangeEmailToken(@PathVariable long id) {
+        try {
+            boolean isSaveToDBAndSentWithSuccess = userService.changeEmailById(id);
+            if (isSaveToDBAndSentWithSuccess) {
+                System.out.println("Email ChangeEmailToken was successfully!");
+                return ResponseEntity.ok(Collections.singletonMap("value", "SUCCESS"));
+            }
+        } catch (Exception e) {
+            System.out.println("An error has occurred on the process of sending email!");
+            return ResponseEntity.ok(Collections.singletonMap("value", "FAILING"));
+        }
+
+        return null;
+    }
+    @GetMapping(path = "/users/email-verification/changeEmailToken/{token}")
+    public ResponseEntity verifyEmailTokenForChangeEmail(@CurrentUser User loggedInUser,
+                                                         @PathVariable String token,
+                                                         @Valid @RequestBody(required = true) UpdateEmail updateEmail ) {
+        try {
+            System.out.println("###");
+
+            boolean isVerifiedAndDeleted = verificationTokenService.verifyEmailTokenChangeEmail(token);
+            boolean isChangeEmail = userService.changeEmail(loggedInUser, updateEmail);
+            if (isVerifiedAndDeleted && isChangeEmail) {
+                System.out.println("SUCCESS");
+                return ResponseEntity.ok(Collections.singletonMap("value", "SUCCESS"));
+            }
+        } catch (Exception e) {
+            System.out.println("FAILING");
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
+        return ResponseEntity.ok(Collections.singletonMap("value", "UNDEFINED"));
+    }
+
+
 }
