@@ -16,7 +16,6 @@ import com.hoaxify.hoaxify.user.User;
 import com.hoaxify.hoaxify.user.UserRepository;
 import com.hoaxify.hoaxify.user.UserService;
 import org.apache.commons.io.FileUtils;
-import org.aspectj.util.FileUtil;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

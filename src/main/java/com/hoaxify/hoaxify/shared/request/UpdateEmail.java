@@ -10,7 +10,7 @@ import javax.validation.constraints.Size;
 @Data
 public class UpdateEmail {
 
-    @NotNull(message = "{hoaxify.constraints.username.NotNull.message}")
+//    @NotNull(message = "{hoaxify.constraints.username.NotNull.message}")
     @Size(min = 4, max = 255)
     @Pattern(regexp=".+@.+\\..+", message="Please provide a valid email address")
     @UniqueUsername

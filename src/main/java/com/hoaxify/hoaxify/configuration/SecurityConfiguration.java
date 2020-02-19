@@ -38,6 +38,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
                     // email-verification
                     .antMatchers(HttpMethod.GET, "/api/1.0/users/email-verification/**").authenticated()
+//                    .antMatchers(HttpMethod.GET, "/api/1.0/users/email-verification/changeEmailToken/**").authenticated()
                 .and()
                 .authorizeRequests().anyRequest().permitAll();
 

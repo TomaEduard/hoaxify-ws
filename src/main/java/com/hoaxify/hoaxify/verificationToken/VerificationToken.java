@@ -16,9 +16,9 @@ public class VerificationToken {
 //    @Temporal(TemporalType.TIMESTAMP)
 //    private Date date;
 
-    private String changeEmailToken = "xxx";
+    private String changeEmailToken = "";
 
-    private String changePasswordToken = "xxx";
+    private String changePasswordToken = "";
 
     @OneToOne
     private User user;

@@ -61,6 +61,7 @@ public class UserController {
     public ResponseEntity<?> renewAndResendEmailConfirmation(@PathVariable long id) {
         try {
             boolean isSaveToDBAndSentWithSuccess = userService.resendEmailById(id);
+
             if (isSaveToDBAndSentWithSuccess) {
                 System.out.println("Email Resending was successfully!");
                 return ResponseEntity.ok(Collections.singletonMap("value", "SUCCESS"));
@@ -95,7 +96,8 @@ public class UserController {
     @PreAuthorize("#id == principal.id")
     public ResponseEntity<?> ChangeEmailToken(@PathVariable long id) {
         try {
-            boolean isSaveToDBAndSentWithSuccess = userService.changeEmailById(id);
+//            boolean isSaveToDBAndSentWithSuccess = userService.changeEmailById(id);
+            boolean isSaveToDBAndSentWithSuccess = verificationTokenService.changeEmailById(id);
             if (isSaveToDBAndSentWithSuccess) {
                 System.out.println("Email ChangeEmailToken was successfully!");
                 return ResponseEntity.ok(Collections.singletonMap("value", "SUCCESS"));
@@ -107,10 +109,10 @@ public class UserController {
 
         return null;
     }
-    @GetMapping(path = "/users/email-verification/changeEmailToken/{token}")
+    @PostMapping(path = "/users/email-verification/changeEmailToken/{token}")
     public ResponseEntity verifyEmailTokenForChangeEmail(@CurrentUser User loggedInUser,
                                                          @PathVariable String token,
-                                                         @Valid @RequestBody(required = true) UpdateEmail updateEmail ) {
+                                                         @Valid @RequestBody(required = false) UpdateEmail updateEmail ) {
         try {
             System.out.println("###");
 
