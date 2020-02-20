@@ -9,6 +9,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
 
+import java.util.Date;
 import java.util.UUID;
 import java.util.stream.IntStream;
 
@@ -37,6 +38,7 @@ public class HoaxifyApplication {
                     user.setPassword("P4ssword");
 //                        user.setUserPreference(userPreference);
                     user.setImage(UUID.randomUUID().toString().replaceAll("-", ""));
+                    user.setTimestamp(new Date());
                     return user;
                 })
                 .forEach(userService::saveUserAndVerificationStatusTrueWithoutAWS);
@@ -46,6 +48,7 @@ public class HoaxifyApplication {
             user5.setDisplayName("display_user5");
             user5.setPassword("P4ssword");
             user5.setImage(UUID.randomUUID().toString().replaceAll("-", ""));
+            user5.setTimestamp(new Date());
             userService.saveUserAndVerificationStatusFalseWithoutAWS(user5);
 
             User user6 = new User();

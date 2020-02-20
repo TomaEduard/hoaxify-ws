@@ -15,6 +15,7 @@ import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.beans.Transient;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -48,6 +49,9 @@ public class User implements UserDetails {
 
     @NotNull
     private Boolean emailVerificationStatus = false;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date timestamp;
 
     @OneToOne(mappedBy = "user", orphanRemoval = true)
     private VerificationToken verificationToken;

@@ -30,6 +30,7 @@ public class UserController {
 
     @PostMapping("/users")
     GenericResponse createUser(@Valid @RequestBody User user) {
+        user.setTimestamp(new Date());
         userService.save(user);
         return new GenericResponse("User saved");
     }

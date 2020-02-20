@@ -18,12 +18,15 @@ public class UserVM {
 
     private Boolean emailVerificationStatus;
 
+    private long date;
+
     public UserVM(User user) {
         this.setId(user.getId());
         this.setUsername(user.getUsername());
         this.setDisplayName(user.getDisplayName());
         this.setImage(user.getImage());
         this.setEmailVerificationStatus(user.getEmailVerificationStatus());
+        this.setDate(user.getTimestamp().getTime());
     }
 
 }
