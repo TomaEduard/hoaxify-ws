@@ -102,6 +102,11 @@ public class HoaxService {
         return hoaxRepository.findByIdGreaterThanAndUser(id, inDb, pageable.getSort()) ;
     }
 
+    // sa aduc toate hoaxurile pe care userul le are ca favorite
+//    public Page<Hoax> getNewHoaxesByPreferences(long id, long id, boolean favorite, Pageable pageable) {
+//
+//    }
+
     public long getNewHoaxesCount(long id) {
         return hoaxRepository.countByIdGreaterThan(id);
     }

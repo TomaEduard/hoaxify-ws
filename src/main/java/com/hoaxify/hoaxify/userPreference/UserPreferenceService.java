@@ -6,9 +6,14 @@ import com.hoaxify.hoaxify.error.NotFoundException;
 import com.hoaxify.hoaxify.user.User;
 import com.hoaxify.hoaxify.user.UserRepository;
 import com.hoaxify.hoaxify.user.UserService;
+import com.hoaxify.hoaxify.userPreference.userPreferenceVM.UserPreferenceVM;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserPreferenceService {
@@ -67,12 +72,45 @@ public class UserPreferenceService {
         return userPreferenceRepository.save(inDB);
     }
 
-
-
     public UserPreferenceService(UserPreferenceRepository userPreferenceRepository, HoaxRepository hoaxRepository, UserRepository userRepository) {
         this.userPreferenceRepository = userPreferenceRepository;
         this.hoaxRepository = hoaxRepository;
         this.userRepository = userRepository;
     }
 
+    public List<UserPreference> getAllFavoriteTrueByUser(long id, UserPreferenceVM request) {
+        Optional<User> userDB = userRepository.findById(id);
+
+        if (request.isFavorite() &&
+            request.isLike() &&
+            request.isBookmark()) {
+           return userPreferenceRepository.findByUserAndFavoriteTrueAndLikeTrueAndBookmarkTrue(userDB);
+
+        } else if (request.isFavorite() &&
+            request.isLike()) {
+            return userPreferenceRepository.findByUserAndFavoriteTrueAndLikeTrue(userDB);
+        } else if (request.isFavorite() &&
+            request.isBookmark()) {
+            return userPreferenceRepository.findByUserAndFavoriteTrueAndBookmarkTrue(userDB);
+        } else if (request.isLike() &&
+                request.isBookmark()) {
+            return userPreferenceRepository.findByUserAndLikeTrueAndBookmarkTrue(userDB);
+
+        } else if (request.isFavorite()) {
+            return userPreferenceRepository.findByUserAndFavoriteTrue(userDB);
+        } else if (request.isLike()) {
+            return userPreferenceRepository.findByUserAndLikeTrue(userDB);
+        } else if (request.isBookmark()) {
+            return userPreferenceRepository.findByUserAndBookmarkTrue(userDB);
+        } else {
+            return userPreferenceRepository.findByUser(userDB);
+        }
+
+    }
+
+//    public List<UserPreferenceWithHoax> getAllFavoriteTrueByUserWithHoax(long id) {
+//        Optional<User> userDB = userRepository.findById(id);
+//
+//        return userPreferenceRepository.findByUserAndFavoriteTrue(userDB);
+//    }
 }
