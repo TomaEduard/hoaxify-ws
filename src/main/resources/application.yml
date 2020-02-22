@@ -2,8 +2,8 @@
 spring:
   profiles:
     active:
-#      - prod
-      - dev
+      - prod
+#      - dev
   jpa:
     properties:
       javax:
@@ -22,14 +22,21 @@ spring:
 ---
 spring:
   profiles: prod
-  datasource:
-    url: jdbc:h2:./hoaxify-prod
-  h2:
-    console:
-      enabled: false
+#  datasource:
+#    url: jdbc:h2:./hoaxify-prod
+#  h2:
+#    console:
+#      enabled: false
   jpa:
     hibernate:
       ddl-auto: update
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+  datasource:
+    url: jdbc:mysql://localhost:3306/hoaxify-prod
+    username: root
+    password: 1asd
+    #   spring boot 2 this is required for all non in-memory db
+    initialization-mode: always
 hoaxify:
   upload-path: uploads-prod
 ---
