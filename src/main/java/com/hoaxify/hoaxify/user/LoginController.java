@@ -5,18 +5,17 @@ import com.hoaxify.hoaxify.shared.CurrentUser;
 import com.hoaxify.hoaxify.user.userVM.UserVM;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.nio.file.AccessDeniedException;
 
 @RestController
+@RequestMapping("/api/1.0")
+@CrossOrigin
 public class LoginController {
 
-    @PostMapping("/api/1.0/login")
+    @PostMapping("/login")
     UserVM handleLogin(@CurrentUser User loggedInUser) {
         return new UserVM(loggedInUser);
     }

@@ -65,6 +65,11 @@ public class UserService {
         return inDB;
     }
 
+    public User getUserByUsernameForCommandLineRunner(String username) {
+        User inDB = userRepository.findByUsername(username);
+        return inDB;
+    }
+
     public User update(long id, UserUpdateVM userUpdateVM) {
         User inDb = userRepository.getOne(id);
         inDb.setDisplayName(userUpdateVM.getDisplayName());

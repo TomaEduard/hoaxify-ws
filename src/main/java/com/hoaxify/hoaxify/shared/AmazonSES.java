@@ -24,8 +24,9 @@ public class AmazonSES {
     final String HTMLBODY = "<h1>Please verify your email address</h1>"
             + "<p>Thank you for registering with our Hoaxify App. To complete registration process and be able to log in,"
             + " click on the following link: "
-//            + "<a href='http://ec2-52-59-187-214.eu-central-1.compute.amazonaws.com:8080/verification-service/email-verification.html?token=$tokenValue'>"
-            + "<a href='http://localhost:3000/#/verification/confirmationToken?token=$tokenValue'>"
+            + "<a href='http://hoaxify-frontend.s3-website.eu-west-3.amazonaws.com/#/verification/confirmationToken?token=$tokenValue'>"
+//            + "<a href='http://localhost:3000/#/verification/confirmationToken?token=$tokenValue'>"
+
             + "Final step to complete your registration" + "</a><br/><br/>"
             + "Thank you! And we are waiting for you inside!";
 
@@ -33,8 +34,8 @@ public class AmazonSES {
     final String TEXTBODY = "Please verify your email address. "
             + "Thank you for registering with our MHoaxify app. To complete registration process and be able to log in,"
             + " open then the following URL in your browser window: "
-//            + " http://ec2-52-59-187-214.eu-central-1.compute.amazonaws.com:8080/verification-service/email-verification.html?token=$tokenValue"
-            + "<a href='http://localhost:3000/#/verification/confirmationToken?token=$tokenValue'>"
+            + "<a href='http://hoaxify-frontend.s3-website.eu-west-3.amazonaws.com/#/verification/confirmationToken?token=$tokenValue'>"
+//            + "<a href='http://localhost:3000/#/verification/confirmationToken?token=$tokenValue'>"
             + " Thank you! And we are waiting for you inside!";
 
 //    $userId
@@ -46,8 +47,8 @@ public class AmazonSES {
             + "This confirmation link is valid for 10 days and can be used only once. "
             + "<br/>"
             + "If you would like to continue and change it, please click the following link:"
-//            + "<a href='http://ec2-52-59-187-214.eu-central-1.compute.amazonaws.com:8080/verification-service/email-verification.html?token=$tokenValue'>"
-            + "<a href='http://localhost:3000/#/verification/changeEmail?token=$tokenValue'>"
+            + "<a href='http://hoaxify-frontend.s3-website.eu-west-3.amazonaws.com/#/verification/changeEmail?token=$tokenValue'>"
+//            + "<a href='http://localhost:3000/#/verification/changeEmail?token=$tokenValue'>"
             + " Click here to redirect for change your email.</a>"
 
             + "<br/><br/>"
@@ -58,8 +59,8 @@ public class AmazonSES {
             + "If you did not request this, please disregard this email. This confirmation link is valid for 10 days and can be used only once."
             + "<br/>"
             + "If you would like to continue and change it, please click the following link:"
-//            + "<a href='http://ec2-52-59-187-214.eu-central-1.compute.amazonaws.com:8080/verification-service/email-verification.html?token=$tokenValue'>"
-            + "<a href='http://localhost:3000/#/verification/changeEmail?token=$tokenValue'>"
+            + "<a href='http://hoaxify-frontend.s3-website.eu-west-3.amazonaws.com/#/verification/changeEmail?token=$tokenValue'>"
+//            + "<a href='http://localhost:3000/#/verification/changeEmail?token=$tokenValue'>"
             + " Click here to redirect for change your email.</a>"
 
             + "<br/><br/>"
@@ -72,7 +73,8 @@ public class AmazonSES {
             + "<p>Hi, $firstName!</p> "
             + "<p>Someone has requested to reset your password with our project. If it were not you, please ignore it."
             + " otherwise please click on the link below to set a new password: "
-            + "<a href='http://localhost:8088/verification_service_war/password-reset.html?token=$tokenValue'>"
+            + "<a href='http://hoaxify-frontend.s3-website.eu-west-3.amazonaws.com/verification_service_war/password-reset.html?token=$tokenValue'>"
+//            + "<a href='http://localhost:3000/verification_service_war/password-reset.html?token=$tokenValue'>"
             + " Click this link to Reset Password"
             + "</a><br/><br/>"
             + "Thank you!";
@@ -82,7 +84,8 @@ public class AmazonSES {
             + "Hi, $firstName! "
             + "Someone has requested to reset your password with our project. If it were not you, please ignore it."
             + " otherwise please open the link below in your browser window to set a new password: "
-            + " http://localhost:8088/verification_service_war/password-reset.html?token=$tokenValue"
+            + " http://hoaxify-frontend.s3-website.eu-west-3.amazonaws.com/verification_service_war/password-reset.html?token=$tokenValue"
+//            + " http://localhost:3000/verification_service_war/password-reset.html?token=$tokenValue"
             + " Thank you!";
 
 

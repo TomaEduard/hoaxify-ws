@@ -29,7 +29,6 @@ public class WebConfiguration implements WebMvcConfigurer {
     @Bean
     CommandLineRunner creteUploadFolder() {
         return (args) -> {
-
             createNonExistingFolder(appConfiguration.getUploadPath());
             createNonExistingFolder(appConfiguration.getFullProfileImagesPath());
             createNonExistingFolder(appConfiguration.getFullAttachmentsPath());
