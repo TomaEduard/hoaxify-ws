@@ -55,6 +55,7 @@ public class HoaxifyApplication {
             user6.setDisplayName("Eduard Toma");
             user6.setPassword("P4ssword");
             user6.setImage(UUID.randomUUID().toString().replaceAll("-", ""));
+            user6.setTimestamp(new Date());
             userService.saveUserAndVerificationStatusFalseWithoutAWS(user6);
 
             User user7 = new User();

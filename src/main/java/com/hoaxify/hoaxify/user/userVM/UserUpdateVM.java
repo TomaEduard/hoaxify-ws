@@ -1,5 +1,6 @@
 package com.hoaxify.hoaxify.user.userVM;
 
+import com.hoaxify.hoaxify.shared.FileSize;
 import com.hoaxify.hoaxify.shared.ProfileImage;
 import lombok.Data;
 
@@ -14,5 +15,6 @@ public class UserUpdateVM {
     private String displayName;
 
     @ProfileImage
+    @FileSize(max=1)
     private String image;
 }
