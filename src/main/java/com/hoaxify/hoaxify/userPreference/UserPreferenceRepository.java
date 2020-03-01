@@ -23,5 +23,10 @@ public interface UserPreferenceRepository extends JpaRepository<UserPreference, 
     List<UserPreference> findByUserAndLikeTrue(Optional<User> user);
     List<UserPreference> findByUserAndBookmarkTrue(Optional<User> user);
     List<UserPreference> findByUser(Optional<User> user);
+//    userPreferenceRepository
+    List<UserPreference> findByUserAndFavoriteTrueOrBookmarkTrueOrLikeTrue(Optional<User> user);
+    List<UserPreference> findByUserAndFavoriteNotNullAndBookmarkNotNullAndLikeTrue(Optional<User> user);
+
+
 
 }

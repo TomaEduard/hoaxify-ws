@@ -78,7 +78,7 @@ public class UserPreferenceService {
         this.userRepository = userRepository;
     }
 
-    public List<UserPreference> getAllFavoriteTrueByUser(long id, UserPreferenceVM request) {
+    public List<UserPreference> getAllPreferenceTrueByUser(long id, UserPreferenceVM request) {
         Optional<User> userDB = userRepository.findById(id);
 
         if (request.isFavorite() &&
@@ -103,7 +103,7 @@ public class UserPreferenceService {
         } else if (request.isBookmark()) {
             return userPreferenceRepository.findByUserAndBookmarkTrue(userDB);
         } else {
-            return userPreferenceRepository.findByUser(userDB);
+            return userPreferenceRepository.findByUserAndFavoriteTrueOrBookmarkTrueOrLikeTrue(userDB);
         }
 
     }

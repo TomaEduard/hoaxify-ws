@@ -2,8 +2,8 @@
 spring:
   profiles:
     active:
-      - prod
-#      - dev
+#      - prod
+      - dev
   jpa:
     properties:
       javax:
