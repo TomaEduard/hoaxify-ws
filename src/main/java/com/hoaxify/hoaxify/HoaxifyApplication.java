@@ -19,23 +19,16 @@ public class HoaxifyApplication {
         SpringApplication.run(HoaxifyApplication.class, args);
     }
 
-    @Bean
+/*    @Bean
     @Profile("dev")
-        // it only run and make 15 object in dev mode
     CommandLineRunner runDev(UserService userService) {
         return (args) -> {
             IntStream.rangeClosed(1, 4)
                     .mapToObj(i -> {
-//                    UserPreference userPreference = new UserPreference();
-//                    userPreference.setFavorite(false);
-//                    userPreference.setLike(false);
-//                    userPreference.setBookmark(false);
-
                         User user = new User();
                         user.setUsername("user" + i);
                         user.setDisplayName("display_user" + i);
                         user.setPassword("P4ssword");
-//                        user.setUserPreference(userPreference);
                         user.setImage(UUID.randomUUID().toString().replaceAll("-", ""));
                         user.setTimestamp(new Date());
                         return user;
@@ -72,10 +65,8 @@ public class HoaxifyApplication {
 //            user.setPassword("P4ssword");
 //            user.setImage(UUID.randomUUID().toString().replaceAll("-", ""));
 //            userService.saveUserAndVerificationStatusFalseWithoutAWS(user);
-//
-
         };
-    }
+    }*/
 
     @Bean
     @Profile("prod")

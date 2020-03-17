@@ -8,6 +8,9 @@ import com.hoaxify.hoaxify.shared.request.UpdateEmail;
 import com.hoaxify.hoaxify.user.userVM.UserUpdateVM;
 import com.hoaxify.hoaxify.verificationToken.VerificationToken;
 import com.hoaxify.hoaxify.verificationToken.VerificationTokenService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -30,25 +33,32 @@ public class UserService {
 
     VerificationTokenService verificationTokenService;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, FileService fileService, AmazonSES amazonSES, VerificationTokenService verificationTokenService) {
+    Utils utils;
+
+    private static final Logger logger = LoggerFactory.getLogger(UserService.class);
+
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, FileService fileService, AmazonSES amazonSES, VerificationTokenService verificationTokenService, Utils utils) {
         super();
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.fileService = fileService;
         this.amazonSES = amazonSES;
         this.verificationTokenService = verificationTokenService;
+        this.utils = utils;
     }
 
     public User save(User user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.setEmailVerificationToken("TEST");
-        user.setEmailVerificationToken(new Utils().generateEmailVerificationToken(user.getUsername()));
-        user.setEmailVerificationStatus(false);
-
-        amazonSES.verifyEmail(user);
-        return userRepository.save(user);
+        try {
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+            user.setEmailVerificationToken(utils.generateEmailVerificationToken(user.getUsername()));
+            user.setEmailVerificationStatus(false);
+            amazonSES.verifyEmail(user);
+            return userRepository.save(user);
+        } catch (Exception e) {
+            logger.error("User save: ", e);
+        }
+        return null;
     }
-
 
     public Page<User> getUser(User loggedInUser, Pageable pageable) {
         if (loggedInUser != null) {

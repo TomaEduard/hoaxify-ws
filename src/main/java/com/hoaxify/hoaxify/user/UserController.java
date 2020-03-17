@@ -55,7 +55,6 @@ public class UserController {
         return new UserVM(updated);
     }
 
-
     // generate new token, save it over the old one at db and send email with it to specific page for validated email
     @PostMapping(path = "/users/email-verification/confirmation/{id:[0-9]+}")
     @PreAuthorize("#id == principal.id")
@@ -115,8 +114,6 @@ public class UserController {
                                                          @PathVariable String token,
                                                          @Valid @RequestBody(required = false) UpdateEmail updateEmail ) {
         try {
-            System.out.println("###");
-
             boolean isVerifiedAndDeleted = verificationTokenService.verifyEmailTokenChangeEmail(token);
             boolean isChangeEmail = userService.changeEmail(loggedInUser, updateEmail);
             if (isVerifiedAndDeleted && isChangeEmail) {

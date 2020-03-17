@@ -84,7 +84,7 @@ public class FileService {
         return fileAttachmentRepository.save(fileAttachment);
     }
 
-    @Scheduled(fixedRate = 60 * 60 * 1000)
+//    @Scheduled(fixedRate = 1000 * 60 * 60)
     public void cleanupStorage() {
         Date oneHourAgo = new Date(System.currentTimeMillis() - (60 * 60 * 1000));
         List<FileAttachment> oldFiles = fileAttachmentRepository.findByDateBeforeAndHoaxIsNull(oneHourAgo);

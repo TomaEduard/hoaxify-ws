@@ -3,6 +3,7 @@ package com.hoaxify.hoaxify.userPreference;
 import com.hoaxify.hoaxify.Hoax.Hoax;
 import com.hoaxify.hoaxify.Hoax.HoaxRepository;
 import com.hoaxify.hoaxify.error.NotFoundException;
+import com.hoaxify.hoaxify.shared.response.UserPrincipal;
 import com.hoaxify.hoaxify.user.User;
 import com.hoaxify.hoaxify.user.UserRepository;
 import com.hoaxify.hoaxify.user.UserService;
@@ -53,9 +54,9 @@ public class UserPreferenceService {
         return userPreference;
     }
 
-    public UserPreference saveUserPreference(User loggedInUser, UserPreference userPreference, long id) {
+    public UserPreference saveUserPreference(UserPrincipal userPrincipal, UserPreference userPreference, long id) {
         Hoax inDBHoax = hoaxRepository.findById(id).get();
-        User inDBUser = userRepository.findByUsername(loggedInUser.getUsername());
+        User inDBUser = userRepository.findByUsername(userPrincipal.getUsername());
 
         // verify if preference already exist in db for update
         UserPreference inDB = userPreferenceRepository.findByHoaxIdAndUserId(inDBHoax.getId(), inDBUser.getId());
@@ -108,9 +109,4 @@ public class UserPreferenceService {
 
     }
 
-//    public List<UserPreferenceWithHoax> getAllFavoriteTrueByUserWithHoax(long id) {
-//        Optional<User> userDB = userRepository.findById(id);
-//
-//        return userPreferenceRepository.findByUserAndFavoriteTrue(userDB);
-//    }
 }

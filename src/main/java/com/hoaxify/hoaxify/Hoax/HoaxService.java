@@ -23,6 +23,7 @@ import javax.persistence.criteria.Root;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class HoaxService {
@@ -37,19 +38,22 @@ public class HoaxService {
 
     UserPreferenceRepository userPreferenceRepository;
 
+    UserRepository userRepository;
 
-
-    public HoaxService(HoaxRepository hoaxRepository, UserService userService, FileAttachmentRepository fileAttachmentRepository, FileService fileService, UserPreferenceRepository userPreferenceRepository) {
+    public HoaxService(HoaxRepository hoaxRepository, UserService userService, FileAttachmentRepository fileAttachmentRepository, FileService fileService, UserPreferenceRepository userPreferenceRepository, UserRepository userRepository) {
         this.hoaxRepository = hoaxRepository;
         this.userService = userService;
         this.fileAttachmentRepository = fileAttachmentRepository;
         this.fileService = fileService;
         this.userPreferenceRepository = userPreferenceRepository;
+        this.userRepository = userRepository;
     }
 
-    public Hoax save(User user, Hoax hoax) {
+    public Hoax save(long id, Hoax hoax) {
+        User userDB = userRepository.findById(id).get();
+//        User userDB = userRepository.findByUsername(username);
         hoax.setTimestamp(new Date());
-        hoax.setUser(user);
+        hoax.setUser(userDB);
         if (hoax.getAttachment() != null) {
             FileAttachment inDb = fileAttachmentRepository.findById(hoax.getAttachment().getId()).get();
             inDb.setHoax(hoax);

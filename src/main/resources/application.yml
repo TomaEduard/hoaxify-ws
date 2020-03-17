@@ -33,6 +33,7 @@ spring:
 #      ddl-auto: create
 #    database-platform: org.hibernate.dialect.MySQL8Dialect
     database-platform: org.hibernate.dialect.MySQL57Dialect
+
   datasource:
     url: jdbc:mysql://${RDS_HOSTNAME:localhost}:${RDS_PORT:3306}/${RDS_DB_NAME:hoaxify-prod}
     username: ${RDS_USERNAME:root}

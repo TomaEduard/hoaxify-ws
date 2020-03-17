@@ -20,7 +20,7 @@ import java.util.List;
 
 @Data
 @Entity
-public class User implements UserDetails {
+public class User{
 
     private static final long serialVersionUID = 4074374728582967483L;
 
@@ -29,13 +29,13 @@ public class User implements UserDetails {
     private long id;
 
     @NotNull(message = "{hoaxify.constraints.username.NotNull.message}")
-    @Size(min = 4, max = 255)
+    @Size(min = 5, max = 255)
     @Pattern(regexp=".+@.+\\..+", message="Please provide a valid email address")
     @UniqueUsername
     private String username;
 
     @NotNull
-    @Size(min = 4, max = 255)
+    @Size(min = 3, max = 255)
     private String displayName;
 
     @NotNull
@@ -61,35 +61,5 @@ public class User implements UserDetails {
 
     @OneToMany(mappedBy = "user")
     private List<UserPreference> userPreference;
-
-    @Override
-    @Transient
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return AuthorityUtils.createAuthorityList("Role_USER");
-    }
-
-    @Override
-    @Transient
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    @Transient
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    @Transient
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    @Transient
-    public boolean isEnabled() {
-        return true;
-    }
 
 }

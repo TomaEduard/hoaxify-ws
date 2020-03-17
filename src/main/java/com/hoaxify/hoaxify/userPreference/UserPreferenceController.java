@@ -4,10 +4,12 @@ import com.hoaxify.hoaxify.Hoax.Hoax;
 import com.hoaxify.hoaxify.Hoax.HoaxRepository;
 import com.hoaxify.hoaxify.Hoax.HoaxVM.HoaxVM;
 import com.hoaxify.hoaxify.shared.CurrentUser;
+import com.hoaxify.hoaxify.shared.response.UserPrincipal;
 import com.hoaxify.hoaxify.user.User;
 import com.hoaxify.hoaxify.userPreference.userPreferenceVM.UserPreferenceVM;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -25,21 +27,20 @@ public class UserPreferenceController {
     HoaxRepository hoaxRepository;
 
     // 1. Current user    2. Id of hoax       3. UserPreference
-    @PostMapping("/preference/{id:[0-9]+}")
-    UserPreferenceResponse createUserPreference(@CurrentUser User loggedInUser,
+    @PostMapping("/preference/{userId:[0-9]+}")
+    UserPreferenceResponse createUserPreference(@AuthenticationPrincipal UserPrincipal userPrincipal,
                                          @RequestBody UserPreference userPreference,
-                                         @PathVariable long id) {
-        UserPreference inDB = userPreferenceService.saveUserPreference(loggedInUser, userPreference, id);
+                                         @PathVariable long userId) {
+        UserPreference inDB = userPreferenceService.saveUserPreference(userPrincipal, userPreference, userId);
 
         ModelMapper modelMapper = new ModelMapper();
         UserPreferenceResponse returnValue = modelMapper.map(inDB, UserPreferenceResponse.class);
         return returnValue;
     }
 
-
-    @PostMapping("/preference/filter/{id:[0-9]+}")
-    List<HoaxVM> getAllPrefferenceAndFilterByUser(@PathVariable long id, @RequestBody UserPreferenceVM serPreferenceVM) {
-        List<UserPreference> allPreferenceTrueByUser = userPreferenceService.getAllPreferenceTrueByUser(id, serPreferenceVM);
+    @PostMapping("/preference/filter/{userId:[0-9]+}")
+    List<HoaxVM> getAllPrefferenceAndFilterByUser(@PathVariable long userId, @RequestBody UserPreferenceVM serPreferenceVM) {
+        List<UserPreference> allPreferenceTrueByUser = userPreferenceService.getAllPreferenceTrueByUser(userId, serPreferenceVM);
 
         // TODO: Need implement page
         ArrayList<HoaxVM> returnValue = new ArrayList<>();

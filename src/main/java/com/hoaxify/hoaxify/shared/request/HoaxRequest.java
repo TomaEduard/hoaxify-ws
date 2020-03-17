@@ -1,4 +1,4 @@
-package com.hoaxify.hoaxify.Hoax;
+package com.hoaxify.hoaxify.shared.request;
 
 import com.hoaxify.hoaxify.file.FileAttachment;
 import com.hoaxify.hoaxify.user.User;
@@ -12,28 +12,20 @@ import java.util.Date;
 import java.util.List;
 
 @Data
-@Entity
-public class Hoax {
-
-    @Id
-    @GeneratedValue
-    private long id;
+public class HoaxRequest {
 
     @NotNull
-    @Size(min = 3, max = 5000)
+    @Size(min = 10, max = 5000)
     @Column(length = 5000)
     private String content;
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date timestamp;
 
-    @ManyToOne
-    private User user;
-
-    @OneToOne(mappedBy = "hoax", orphanRemoval = true)
     private FileAttachment attachment;
 
-    @OneToMany(mappedBy = "hoax", orphanRemoval = true)
-    private List<UserPreference> userPreference;
+    private long userId;
+
+
 
 }
