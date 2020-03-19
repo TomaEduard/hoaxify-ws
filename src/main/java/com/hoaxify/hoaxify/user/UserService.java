@@ -17,6 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.Date;
 
 //import com.hoaxify.hoaxify.shared.Utils;
 
@@ -49,13 +50,15 @@ public class UserService {
 
     public User save(User user) {
         try {
+            user.setTimestamp(new Date());
             user.setPassword(passwordEncoder.encode(user.getPassword()));
             user.setEmailVerificationToken(utils.generateEmailVerificationToken(user.getUsername()));
             user.setEmailVerificationStatus(false);
             amazonSES.verifyEmail(user);
             return userRepository.save(user);
+
         } catch (Exception e) {
-            logger.error("User save: ", e);
+            logger.error("User save error: ", e);
         }
         return null;
     }

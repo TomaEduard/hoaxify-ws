@@ -145,12 +145,6 @@ public class AmazonSES {
         System.out.println("Email sent to: " + user.getUsername());
     }
 
-
-
-
-
-
-
     public boolean sendPasswordResetRequest(String firstName, String email, String token) {
 
         System.setProperty("aws.accessKeyId", SecurityConstants.ACCESS_KEY_ID);
