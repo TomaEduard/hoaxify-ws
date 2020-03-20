@@ -53,12 +53,8 @@ public class User{
     @Temporal(TemporalType.TIMESTAMP)
     private Date timestamp;
 
-    // oAuth2
-    @NotNull
     @Enumerated(EnumType.STRING)
     private AuthProvider provider;
-
-    private String providerId;
 
     @OneToOne(mappedBy = "user", orphanRemoval = true)
     private VerificationToken verificationToken;

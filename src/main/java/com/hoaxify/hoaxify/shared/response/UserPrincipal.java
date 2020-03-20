@@ -1,5 +1,6 @@
 package com.hoaxify.hoaxify.shared.response;
 
+import com.hoaxify.hoaxify.user.AuthProvider;
 import com.hoaxify.hoaxify.user.User;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -29,10 +30,11 @@ public class UserPrincipal implements UserDetails {
     private String image;
     private String jwt;
     private Collection<? extends GrantedAuthority> authorities;
+    private AuthProvider provider;
     private Map<String, Object> attributes;
 
     public UserPrincipal(Long id, String username, String displayName, String image, String password, boolean emailVerificationStatus,
-                         Collection<? extends GrantedAuthority> authorities) {
+                         Collection<? extends GrantedAuthority> authorities, AuthProvider authProvider) {
         this.id = id;
         this.username = username;
         this.displayName = displayName;
@@ -40,6 +42,7 @@ public class UserPrincipal implements UserDetails {
         this.password = password;
         this.emailVerificationStatus = emailVerificationStatus;
         this.authorities = authorities;
+        this.provider = authProvider;
     }
 
     public static UserPrincipal create(User user) {
@@ -53,7 +56,8 @@ public class UserPrincipal implements UserDetails {
                 user.getImage(),
                 user.getPassword(),
                 user.getEmailVerificationStatus(),
-                authorities
+                authorities,
+                user.getProvider()
         );
     }
 

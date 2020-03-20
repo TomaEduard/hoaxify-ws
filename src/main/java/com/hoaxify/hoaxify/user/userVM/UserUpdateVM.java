@@ -11,7 +11,7 @@ import javax.validation.constraints.Size;
 public class UserUpdateVM {
 
     @NotNull
-    @Size(min = 4, max = 255)
+    @Size(min = 3, max = 255)
     private String displayName;
 
     @ProfileImage

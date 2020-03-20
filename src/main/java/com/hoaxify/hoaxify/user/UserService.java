@@ -4,6 +4,7 @@ import com.hoaxify.hoaxify.error.NotFoundException;
 import com.hoaxify.hoaxify.file.FileService;
 import com.hoaxify.hoaxify.shared.AmazonSES;
 import com.hoaxify.hoaxify.shared.Utils;
+import com.hoaxify.hoaxify.shared.request.LoginRequestOAuth2;
 import com.hoaxify.hoaxify.shared.request.UpdateEmail;
 import com.hoaxify.hoaxify.user.userVM.UserUpdateVM;
 import com.hoaxify.hoaxify.verificationToken.VerificationToken;
@@ -50,15 +51,34 @@ public class UserService {
 
     public User save(User user) {
         try {
+            user.setProvider(AuthProvider.local);
             user.setTimestamp(new Date());
             user.setPassword(passwordEncoder.encode(user.getPassword()));
             user.setEmailVerificationToken(utils.generateEmailVerificationToken(user.getUsername()));
-            user.setEmailVerificationStatus(false);
-            amazonSES.verifyEmail(user);
+            user.setEmailVerificationStatus(true);
+//            amazonSES.verifyEmail(user);
             return userRepository.save(user);
-
         } catch (Exception e) {
-            logger.error("User save error: ", e);
+            logger.error("User save: ", e);
+        }
+        return null;
+    }
+
+    public User saveOAuth2(LoginRequestOAuth2 loginRequestOAuth2, AuthProvider authProvider) {
+        try {
+            User user = new User();
+            user.setUsername(loginRequestOAuth2.getUsername());
+            user.setDisplayName(loginRequestOAuth2.getDisplayName());
+            user.setImage(loginRequestOAuth2.getImage());
+            user.setProvider(authProvider);
+            user.setTimestamp(new Date());
+//            user.setPassword(passwordEncoder.encode(user.getPassword()));
+//            user.setEmailVerificationToken(utils.generateEmailVerificationToken(user.getUsername()));
+            user.setEmailVerificationStatus(true);
+//            amazonSES.verifyEmail(user);
+            return userRepository.save(user);
+        } catch (Exception e) {
+            logger.error("User save: ", e);
         }
         return null;
     }
@@ -76,6 +96,10 @@ public class UserService {
             throw new NotFoundException(username + " not found");
         }
         return inDB;
+    }
+
+    public boolean getUserByUsernameReturnBoolean(String username) {
+        return userRepository.existsByUsername(username);
     }
 
     public User getUserByUsernameForCommandLineRunner(String username) {
