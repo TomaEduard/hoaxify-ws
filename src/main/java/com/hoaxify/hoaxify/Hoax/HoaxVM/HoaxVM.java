@@ -3,12 +3,9 @@ package com.hoaxify.hoaxify.Hoax.HoaxVM;
 import com.hoaxify.hoaxify.Hoax.Hoax;
 import com.hoaxify.hoaxify.file.FileAttachmentVM;
 import com.hoaxify.hoaxify.user.userVM.UserVM;
-import com.hoaxify.hoaxify.userPreference.UserPreference;
 import com.hoaxify.hoaxify.userPreference.userPreferenceVM.UserPreferenceVM;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.Optional;
 
 @Data
 @NoArgsConstructor

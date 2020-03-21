@@ -1,9 +1,7 @@
 package com.hoaxify.hoaxify.security;
 
 import com.hoaxify.hoaxify.shared.Utils;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,7 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@Component("bean1")
+@Component
 public class TokenAuthenticationFilter extends OncePerRequestFilter {
 
     @Autowired
@@ -27,7 +25,7 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
     private Utils utils;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull FilterChain chain)
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
 
         final String authorizationHeader = request.getHeader("Authorization");

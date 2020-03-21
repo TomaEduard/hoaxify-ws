@@ -1,8 +1,6 @@
 package com.hoaxify.hoaxify.Hoax;
 
 import com.hoaxify.hoaxify.Hoax.HoaxVM.HoaxVM;
-import com.hoaxify.hoaxify.configuration.SecurityConstants;
-import com.hoaxify.hoaxify.shared.CurrentUser;
 import com.hoaxify.hoaxify.shared.GenericResponse;
 import com.hoaxify.hoaxify.shared.response.UserPrincipal;
 import com.hoaxify.hoaxify.user.User;
@@ -12,25 +10,16 @@ import com.hoaxify.hoaxify.userPreference.UserPreference;
 import com.hoaxify.hoaxify.userPreference.UserPreferenceRepository;
 import com.hoaxify.hoaxify.userPreference.UserPreferenceService;
 import com.hoaxify.hoaxify.userPreference.userPreferenceVM.UserPreferenceVM;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import org.apache.tomcat.util.http.parser.Authorization;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.security.Principal;
 import java.util.Collections;
-import java.util.Optional;
 import java.util.stream.Stream;
 
 @RestController
@@ -103,7 +92,7 @@ public class HoaxController {
 //        return (Page<HoaxVM>) new ModelMapper().<Object>map(allHoaxes, listType);
     }*/
 
-//    @GetMapping("/hoaxes")
+    //    @GetMapping("/hoaxes")
 //    public Page<HoaxVM> getAllHoaxes(Pageable pageable, @CurrentUser User loggedInUser) {
 //        return hoaxService.getAllHoaxes(pageable).map(hoax -> {
 //            HoaxVM hoaxVM = new HoaxVM(hoax);

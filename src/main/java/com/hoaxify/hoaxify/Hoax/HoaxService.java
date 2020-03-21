@@ -1,29 +1,18 @@
 package com.hoaxify.hoaxify.Hoax;
 
-import com.hoaxify.hoaxify.Hoax.HoaxVM.HoaxVM;
 import com.hoaxify.hoaxify.file.FileAttachment;
 import com.hoaxify.hoaxify.file.FileAttachmentRepository;
 import com.hoaxify.hoaxify.file.FileService;
 import com.hoaxify.hoaxify.user.User;
 import com.hoaxify.hoaxify.user.UserRepository;
 import com.hoaxify.hoaxify.user.UserService;
-import com.hoaxify.hoaxify.userPreference.UserPreference;
 import com.hoaxify.hoaxify.userPreference.UserPreferenceRepository;
-import com.hoaxify.hoaxify.userPreference.UserPreferenceResponse;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class HoaxService {
@@ -103,7 +92,7 @@ public class HoaxService {
     public List<Hoax> getNewHoaxesOfUser(long id, String username, Pageable pageable) {
         User inDb = userService.getUserByUsername(username);
 
-        return hoaxRepository.findByIdGreaterThanAndUser(id, inDb, pageable.getSort()) ;
+        return hoaxRepository.findByIdGreaterThanAndUser(id, inDb, pageable.getSort());
     }
 
     // sa aduc toate hoaxurile pe care userul le are ca favorite

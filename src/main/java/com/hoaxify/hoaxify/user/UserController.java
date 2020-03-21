@@ -6,8 +6,6 @@ import com.hoaxify.hoaxify.shared.request.UpdateEmail;
 import com.hoaxify.hoaxify.user.userVM.UserUpdateVM;
 import com.hoaxify.hoaxify.user.userVM.UserVM;
 import com.hoaxify.hoaxify.verificationToken.VerificationTokenService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -30,12 +28,9 @@ public class UserController {
     @Autowired
     VerificationTokenService verificationTokenService;
 
-    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
-
     @PostMapping("/users")
     GenericResponse createUser(@Valid @RequestBody User user) {
         userService.save(user);
-        logger.info("User save successfully");
         return new GenericResponse("User saved");
     }
 

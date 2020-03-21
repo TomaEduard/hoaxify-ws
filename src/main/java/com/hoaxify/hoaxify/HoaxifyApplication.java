@@ -1,12 +1,10 @@
 package com.hoaxify.hoaxify;
 
-import com.hoaxify.hoaxify.configuration.AppConfiguration;
 import com.hoaxify.hoaxify.user.User;
 import com.hoaxify.hoaxify.user.UserService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
 
@@ -15,7 +13,6 @@ import java.util.UUID;
 import java.util.stream.IntStream;
 
 @SpringBootApplication
-@EnableConfigurationProperties(AppConfiguration.class)
 public class HoaxifyApplication {
 
     public static void main(String[] args) {
