@@ -53,7 +53,7 @@ public class LoginControllerTest {
     }
 
     @Test
-    public void postLogin_withIncorectCredentials_receiveUnauthorized() {
+    public void postLogin_withIncorrectCredentials_receiveUnauthorized() {
         authenticate();
         ResponseEntity<Object> response = login(Object.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
@@ -73,7 +73,7 @@ public class LoginControllerTest {
 
     // testing if WWW-Authenticate is not exist in header
     @Test
-    public void postLogin_withIncorectCredentials_receiveUnauthorizedWithoutWWWAuthenitcationHeader() {
+    public void postLogin_withIncorrectCredentials_receiveUnauthorizedWithoutWWWAuthenitcationHeader() {
         authenticate();
         ResponseEntity<Object> response = login(Object.class);
         assertThat(response.getHeaders().containsKey("WWW-Authenticate")).isFalse();
@@ -160,7 +160,6 @@ public class LoginControllerTest {
         assertThat(body.containsKey("password")).isFalse();
     }
 
-
     // Utils
     private void authenticate() {
         testRestTemplate.getRestTemplate()
@@ -175,3 +174,12 @@ public class LoginControllerTest {
         return testRestTemplate.exchange(API_1_0_LOGIN, HttpMethod.POST, null, responseType);
     }
 }
+
+
+
+
+
+
+
+
+

@@ -2,11 +2,9 @@ package com.hoaxify.hoaxify.user;
 
 import com.hoaxify.hoaxify.error.ApiError;
 import com.hoaxify.hoaxify.security.CustomUserDetailsService;
-import com.hoaxify.hoaxify.shared.GenericResponse;
 import com.hoaxify.hoaxify.shared.Utils;
 import com.hoaxify.hoaxify.shared.request.LoginRequest;
 import com.hoaxify.hoaxify.shared.request.LoginRequestOAuth2;
-import com.hoaxify.hoaxify.shared.response.AuthenticationResponse;
 import com.hoaxify.hoaxify.shared.response.UserPrincipal;
 import com.hoaxify.hoaxify.user.userVM.UserVM;
 import org.slf4j.Logger;
@@ -19,7 +17,6 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
@@ -45,13 +42,6 @@ public class LoginController {
     UserService userService;
 
     private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
-
-
-    // for basic auth
-/*    @PostMapping("/login")
-    UserVM handleLogin(@CurrentUser User loggedInUser) {
-        return new UserVM(loggedInUser);
-    }*/
 
     @PostMapping("/login")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) throws Exception {
@@ -87,15 +77,6 @@ public class LoginController {
             User inDB = userService.getUserByUsername(loginRequestOAuth2.getUsername());
             inDB.setImage(loginRequestOAuth2.getImage());
             inDB.setDisplayName(loginRequestOAuth2.getDisplayName());
-
-//            try {
-//                Authentication authentication = authenticationManager.authenticate(
-//                        new UsernamePasswordAuthenticationToken(loginRequestOAuth2.getUsername(), loginRequestOAuth2.getImage()));
-//                );
-//                SecurityContextHolder.getContext().setAuthentication(authentication);
-//            } catch (BadCredentialsException e) {
-//                throw new Exception("Incorrect username or password", e);
-//            }
 
             UserPrincipal user = customUserDetailsService.loadUserByUsername(inDB.getUsername());
             final String jwt = utils.generateToken(user);

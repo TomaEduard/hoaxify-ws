@@ -92,7 +92,7 @@ public class UserController {
     // this page have 2 fields
     // generate new token and send email with it to specific page for validated email
     @PostMapping(path = "/users/email-verification/changeEmail/{id:[0-9]+}")
-    @PreAuthorize("#id == principal.id")
+//    @PreAuthorize("id == principal.id")
     public ResponseEntity<?> ChangeEmailToken(@PathVariable long id) {
         try {
 //            boolean isSaveToDBAndSentWithSuccess = userService.changeEmailById(id);

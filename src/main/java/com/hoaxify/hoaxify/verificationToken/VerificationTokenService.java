@@ -42,12 +42,12 @@ public class VerificationTokenService {
 //            VerificationToken userDBVerificationToken = verificationTokenRepository.findByUser(userDB);
             System.out.println("test2");
 
-            // verificam daca mai avem vrunu !
+            // check if we have any more!
             VerificationToken userDBVerificationToken = verificationTokenRepository.findByUserAndChangeEmailTokenNotNull(userDB);
 
             // if change_email_token already exist will update it
             if (userDBVerificationToken != null) {
-                System.out.println("userDBVerificationToken != null  ===> change_email_token already exist will update it ");
+                System.out.println("userDBVerificationToken != null  ===> change_email_token already exist will update it");
                 userDBVerificationToken.setChangeEmailToken(new Utils().generateEmailVerificationToken(userDB.getUsername()));
                 saveChangeEmailToken(userDBVerificationToken);
 

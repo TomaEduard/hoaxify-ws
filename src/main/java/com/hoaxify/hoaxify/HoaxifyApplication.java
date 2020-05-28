@@ -19,14 +19,14 @@ public class HoaxifyApplication {
         SpringApplication.run(HoaxifyApplication.class, args);
     }
 
-/*    @Bean
+    @Bean
     @Profile("dev")
     CommandLineRunner runDev(UserService userService) {
         return (args) -> {
             IntStream.rangeClosed(1, 4)
                     .mapToObj(i -> {
                         User user = new User();
-                        user.setUsername("user" + i);
+                        user.setUsername("user" + i + "@hoaxify.com");
                         user.setDisplayName("display_user" + i);
                         user.setPassword("P4ssword");
                         user.setImage(UUID.randomUUID().toString().replaceAll("-", ""));
@@ -36,7 +36,7 @@ public class HoaxifyApplication {
                     .forEach(userService::saveUserAndVerificationStatusTrueWithoutAWS);
 
             User user5 = new User();
-            user5.setUsername("user5");
+            user5.setUsername("user5@hoaxify.com");
             user5.setDisplayName("display_user5");
             user5.setPassword("P4ssword");
             user5.setImage(UUID.randomUUID().toString().replaceAll("-", ""));
@@ -49,7 +49,7 @@ public class HoaxifyApplication {
             user6.setPassword("P4ssword");
             user6.setImage(UUID.randomUUID().toString().replaceAll("-", ""));
             user6.setTimestamp(new Date());
-            userService.saveUserAndVerificationStatusFalseWithoutAWS(user6);
+            userService.saveUserAndVerificationStatusTrueWithoutAWS(user6);
 
             User user7 = new User();
             user7.setUsername("admin@hoaxify.com");
@@ -66,7 +66,7 @@ public class HoaxifyApplication {
 //            user.setImage(UUID.randomUUID().toString().replaceAll("-", ""));
 //            userService.saveUserAndVerificationStatusFalseWithoutAWS(user);
         };
-    }*/
+    }
 
     @Bean
     @Profile("prod")

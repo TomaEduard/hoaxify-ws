@@ -4,7 +4,6 @@ import com.hoaxify.hoaxify.shared.response.UserPrincipal;
 import com.hoaxify.hoaxify.user.User;
 import com.hoaxify.hoaxify.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -23,20 +22,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         if (user == null) throw new UsernameNotFoundException(username);
 
-//        return user;
         return UserPrincipal.create(user);
-//                .orElseThrow(() ->
-//                        new UsernameNotFoundException("User not found with email : " + email)
-//                );
-//        return UserPrincipal.create(user);
     }
 
-//    @Transactional
-//    public UserDetails loadUserById(Long id) {
-//        User user = userRepository.findById(id).orElseThrow(
-//                () -> new ResourceNotFoundException("User", "id", id)
-//        );
-//
-//        return UserPrincipal.create(user);
-//    }
 }

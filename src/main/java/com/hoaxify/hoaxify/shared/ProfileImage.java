@@ -12,7 +12,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)// tell JVM to persist annotation in runtime
 public @interface ProfileImage {
 
-    String message() default "{hoaxify.constraints.image.ProfileImage.message}";
+    String message() default "{hoaxify.constraints.image.ProfileImage.message.withoutGif}";
 
     Class<?>[] groups() default { };
 
