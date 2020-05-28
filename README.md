@@ -20,28 +20,28 @@
 # Screenshots
 1. Login Page
 
-![Login Page](https://github.com/TomaEduard/hoaxify-ws/blob/src/main/resources/images/login.PNG)
+![Login Page](https://github.com/TomaEduard/hoaxify-ws/blob/master/src/main/resources/images/login.png)
 
 2. SignUp Page
 
-![ Page](https://github.com/TomaEduard/hoaxify-ws/blob/src/main/resources/images/signup.PNG)
+![SignUp Page](https://github.com/TomaEduard/hoaxify-ws/blob/master/src/main/resources/images/signup.png)
 
 3. Feed Tab
 
-![ Page](https://github.com/TomaEduard/hoaxify-ws/blob/src/main/resources/images/feed.PNG)
+![Feed Tab](https://github.com/TomaEduard/hoaxify-ws/blob/master/src/main/resources/images/feed.png)
 
 4. Preferences Tab
 
-![ Page](https://github.com/TomaEduard/hoaxify-ws/src/main/resources/images/preferences.PNG)
+![Preferences Tab](https://github.com/TomaEduard/hoaxify-ws/blob/master/src/main/resources/images/preferences.png)
 
 5. Explor Tab
 
-![ Page](https://github.com/TomaEduard/hoaxify-ws/blob/master/src/main/resources/images/explor.PNG)
+![Explor Tab](https://github.com/TomaEduard/hoaxify-ws/blob/master/src/main/resources/images/explor.png)
 
 6. Profile Page
 
-![ Page](https://github.com/TomaEduard/spring-reddit-clone/blob/master/src/main/resources/images/profile.PNG)
+![Profile Page](https://github.com/TomaEduard/hoaxify-ws/blob/master/src/main/resources/images/profile.png)
 
 7. Profile Page - Security TAb
 
-![ Page](https://github.com/TomaEduard/spring-reddit-clone/blob/master/src/main/resources/images/profile-security.PNG)
+![Profile Page - Security TAb](https://github.com/TomaEduard/hoaxify-ws/blob/master/src/main/resources/images/profile-security.png)
