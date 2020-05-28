@@ -101,6 +101,7 @@ public class UserController {
                 System.out.println("Email ChangeEmailToken was successfully!");
                 return ResponseEntity.ok(Collections.singletonMap("value", "SUCCESS"));
             }
+
         } catch (Exception e) {
             System.out.println("An error has occurred on the process of sending email!");
             return ResponseEntity.ok(Collections.singletonMap("value", "FAILING"));
