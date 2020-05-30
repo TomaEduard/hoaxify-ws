@@ -60,8 +60,18 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                         "/**/*.css",
                         "/**/*.js").permitAll()
 
-                .antMatchers("/images/**", "/api/1.0/hoaxes/upload", "/api/1.0/login",
+                .antMatchers("/images/**",
+                        "/api/1.0/hoaxes/upload",
+                        "/api/1.0/login",
                         "/api/1.0/auth2/**").permitAll()
+
+                // Swagger API Documentation
+                .antMatchers("/v2/api-docs",
+                        "/configuration/ui",
+                        "/swagger-resources/**",
+                        "/configuration/security",
+                        "/swagger-ui.html",
+                        "/webjars/**").permitAll()
                 .and()
 
                 .authorizeRequests()
@@ -79,7 +89,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
         http.headers().frameOptions().disable();
         http.addFilterBefore(tokenAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
-
     }
 
     @Override
