@@ -1,6 +1,7 @@
 ## Running the Application
-
-- http://hoaxify-frontend.s3-website.eu-west-3.amazonaws.com/#/
+With the help of Spring Boot the project has multiple environments e.g.: dev, prod, test that facilitates working with different teams, eliminates errors and wasted time.Relational database (MySQL) is uses in prod. env. and for test/dev uses In-memory database (H2).
+-The application was developed through Test Driven development (TDD) using Junit.
+-Images with the final status of the application can be found in the description section ofGitHub as well as the Documentation API (Swagger) by accessing http://localhost:8080/swagger-ui.html#/
 
 - Run `package com.hoaxify.hoaxify.HoaxifyApplication` as a Java Application. Check Authentication and REST API Sections for executing REST APIs.
 - The project presents 2 development environments, one of development and one of production. These are set from the configuration file before starting `application.yml` and
